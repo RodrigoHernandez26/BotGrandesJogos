@@ -6,9 +6,6 @@ bot = discord.Client()
 lista_nomes = []
 lista_pontos = []
 
-def capitalizacao(nome):
-    return nome.lower().capitalize()
-
 @bot.event
 async def on_ready():
     print(bot.user.name)
@@ -28,6 +25,9 @@ def log():
         lista_pontos.append(i)
     print(lista_pontos)
     log_pontos.close()
+
+def capitalizacao(nome):
+    return nome.lower().capitalize()
 
 def hora():
     a = datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
@@ -60,6 +60,22 @@ def write_log(mensagem):
     log.write('%s\n' %mensagem)
     log.close()
 
+def organizar(lista_nomes, lista_pontos):
+    qnt_pontos = len(lista_pontos)
+    for i in range (qnt_pontos):
+        for j in range (qnt_pontos):
+            if int(lista_pontos[i]) < int(lista_pontos[j]):
+                a = lista_pontos[i]
+                b = lista_nomes[i]
+                lista_pontos[i] = lista_pontos[j]
+                lista_nomes[i] = lista_nomes[j]
+                lista_pontos[j] = a
+                lista_nomes[j] = b
+    lista_nomes.reverse()
+    lista_pontos.reverse()
+    save(lista_nomes,lista_pontos)
+
+
 @bot.event
 async def on_message(message):
 
@@ -72,7 +88,7 @@ async def on_message(message):
         else:
             lista_nomes.append(nome)
             lista_pontos.append('1')
-            save(lista_nomes, lista_pontos)
+            organizar(lista_nomes, lista_pontos)
             await message.channel.send('O nome ' + nome + ' foi adicionado ao jogo!')
             write_log(hora() + ' - O ' + message.author.name + ' adicionou o ' + nome + ' ao jogo.')
             print(lista_nomes)
@@ -96,7 +112,7 @@ async def on_message(message):
         pos = lista_nomes.index(nome)
         lista_nomes.remove(nome)
         del(lista_pontos[pos])
-        save(lista_nomes, lista_pontos)
+        organizar(lista_nomes, lista_pontos)
         await message.channel.send('O nome ' + nome + ' foi retirado do jogo!')
         write_log(hora() + ' - O ' + message.author.name + ' retirou o ' + nome + ' do jogo.')
 
@@ -107,7 +123,7 @@ async def on_message(message):
         conc = int(lista_pontos[pos])
         print(conc)
         lista_pontos[pos] = conc + 1
-        save(lista_nomes, lista_pontos)
+        organizar(lista_nomes, lista_pontos)
         await message.channel.send('Foi adicionado 1 ponto ao ' + nome + '!')
         write_log(hora() + ' - O ' + message.author.name + ' adicionou 1 ponto ao ' + nome + ', ele tem ' + str(lista_pontos[pos]) + ' agora.')
 
@@ -118,8 +134,8 @@ async def on_message(message):
         conc = int(lista_pontos[pos])
         print(conc)
         lista_pontos[pos] = conc - 1
-        save(lista_nomes, lista_pontos)
+        organizar(lista_nomes, lista_pontos)
         await message.channel.send('For retirado 1 ponto do ' + nome + '!')
         write_log(hora() + ' - O ' + message.author.name + ' retirou 1 ponto ao ' + nome + ', ele tem ' + str(lista_pontos[pos]) + ' agora.')
 
-bot.run('Njc4NzE0NDkwOTI5NDE0MTQ5.Xkm0Sg.KCuYMm06zAhKKTLZF5XtCJ6Gfdk')
+bot.run('Njc5MTUzNzU0MTc1NzAxMDMy.XktNSw.nY9_kDFHRlP3Bp36NT0X_CJ2J7Y')
