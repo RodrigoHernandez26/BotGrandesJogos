@@ -75,7 +75,6 @@ def organizar(lista_nomes, lista_pontos):
     lista_pontos.reverse()
     save(lista_nomes,lista_pontos)
 
-
 @bot.event
 async def on_message(message):
 
@@ -83,27 +82,33 @@ async def on_message(message):
         nome = capitalizacao(message.content[6:])
         print(nome)
         if nome in lista_nomes:
-            await message.channel.send('O nome ' + nome + ' já foi adicionado ao jogo.')
+            novo_embedt = discord.Embed(
+                title = 'O nome ' + nome + ' já foi adicionado ao jogo.',
+                color = 0x22a7f0
+            )
+            await message.channel.send(embed = novo_embedt)
             write_log(hora() + ' - O ' + message.author.name + ' tentou adicionar o ' + nome + ' novamente ao jogo.')
         else:
             lista_nomes.append(nome)
             lista_pontos.append('1')
             organizar(lista_nomes, lista_pontos)
-            await message.channel.send('O nome ' + nome + ' foi adicionado ao jogo!')
+            novo_embedf = discord.Embed(
+                title = 'O nome ' + nome + ' foi adicionado ao jogo!',
+                color = 0x22a7f0
+            )
+            await message.channel.send(embed = novo_embedf)
             write_log(hora() + ' - O ' + message.author.name + ' adicionou o ' + nome + ' ao jogo.')
             print(lista_nomes)
                 
-    if message.content.lower().startswith('?nomes'):
-        await message.channel.send('Os participantes do jogo são: ')
-        for i in range (len(lista_nomes)):
-            await message.channel.send(lista_nomes[i])
-        write_log(hora() + ' - O ' + message.author.name + ' solicitou a listagem dos participantes do jogo.')
-
     if message.content.lower().startswith('?pontos'):
         print(lista_pontos)
-        await message.channel.send('Os pontos são: ')
-        for i in range (len(lista_nomes)):
-            await message.channel.send(lista_nomes[i] + ': ' + str(lista_pontos[i]))
+        embed = discord.Embed(
+            title = 'Os pontos são: ',
+            color = 0x22a7f0
+        )
+        for i in range(len(lista_nomes)):
+            embed.add_field(name = lista_nomes[i], value = lista_pontos[i], inline= True)
+        await message.channel.send(embed = embed)
         write_log(hora() + ' - O ' + message.author.name + ' solicitou a listagem dos pontos dos participantes do jogo.')
 
     if message.content.lower().startswith('?remover'):
@@ -113,7 +118,11 @@ async def on_message(message):
         lista_nomes.remove(nome)
         del(lista_pontos[pos])
         organizar(lista_nomes, lista_pontos)
-        await message.channel.send('O nome ' + nome + ' foi retirado do jogo!')
+        revomer_embed = discord.Embed(
+            title = 'O nome ' + nome + ' foi retirado do jogo!',
+            color = 0x22a7f0
+        )
+        await message.channel.send(embed = revomer_embed)
         write_log(hora() + ' - O ' + message.author.name + ' retirou o ' + nome + ' do jogo.')
 
     if message.content.lower().startswith('?add'):
@@ -124,7 +133,11 @@ async def on_message(message):
         print(conc)
         lista_pontos[pos] = conc + 1
         organizar(lista_nomes, lista_pontos)
-        await message.channel.send('Foi adicionado 1 ponto ao ' + nome + '!')
+        add_embed = discord.Embed(
+            title = 'For adicionado 1 ponto ao ' + nome + '!',
+            color = 0x22a7f0
+        )
+        await message.channel.send(embed = add_embed)
         write_log(hora() + ' - O ' + message.author.name + ' adicionou 1 ponto ao ' + nome + ', ele tem ' + str(lista_pontos[pos]) + ' agora.')
 
     if message.content.lower().startswith('?retirar'):
@@ -135,7 +148,11 @@ async def on_message(message):
         print(conc)
         lista_pontos[pos] = conc - 1
         organizar(lista_nomes, lista_pontos)
-        await message.channel.send('For retirado 1 ponto do ' + nome + '!')
+        retirar_embed = discord.Embed(
+            title = 'Foi retirado 1 ponto do ' + nome + '!',
+            color = 0x22a7f0
+        )
+        await message.channel.send(embed = retirar_embed)
         write_log(hora() + ' - O ' + message.author.name + ' retirou 1 ponto ao ' + nome + ', ele tem ' + str(lista_pontos[pos]) + ' agora.')
 
 bot.run('Njc5MTUzNzU0MTc1NzAxMDMy.XktNSw.nY9_kDFHRlP3Bp36NT0X_CJ2J7Y')
