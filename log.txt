@@ -1,0 +1,17 @@
+
+19/02/2020 - 23:40:20 - O RobinGood adicionou o Rodrigo ao jogo.
+19/02/2020 - 23:40:41 - O Leozera adicionou o Nick ao jogo.
+19/02/2020 - 23:40:46 - O RobinGood adicionou o Edu ao jogo.
+19/02/2020 - 23:40:48 - O RobinGood adicionou o Leo ao jogo.
+19/02/2020 - 23:40:53 - O RobinGood solicitou a listagem dos pontos dos participantes do jogo.
+19/02/2020 - 23:41:03 - O RobinGood adicionou 5 pontos ao Rodrigo, ele tem 1 agora.
+19/02/2020 - 23:41:08 - O RobinGood adicionou 4 pontos ao Nick, ele tem 1 agora.
+19/02/2020 - 23:41:10 - O RobinGood adicionou 3 pontos ao Leo, ele tem 4 agora.
+19/02/2020 - 23:41:14 - O RobinGood adicionou 1 ponto ao Edu, ele tem 2 agora.
+19/02/2020 - 23:41:17 - O RobinGood solicitou a listagem dos pontos dos participantes do jogo.
+19/02/2020 - 23:41:33 - O RobinGood retirou 1 ponto ao Rodrigo, ele tem 5 agora.
+19/02/2020 - 23:41:37 - O RobinGood retirou 2 pontos ao Nick, ele tem 5 agora.
+19/02/2020 - 23:41:40 - O RobinGood solicitou a listagem dos pontos dos participantes do jogo.
+19/02/2020 - 23:42:27 - O RobinGood retirou o Edu do jogo.
+19/02/2020 - 23:42:32 - O RobinGood solicitou a listagem dos pontos dos participantes do jogo.
+19/02/2020 - 23:42:35 - O RobinGood usou o ?help.
