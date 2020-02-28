@@ -220,12 +220,32 @@ async def on_message(message):
             color = 0x22a7f0
         )
         help_embed.set_footer(text = 'Verifique como está escrito o nome da pessoa pelo comando ?pontos. Os comandos não tem sensibilidade a capitalização.')
-        help_embed.add_field(name = '?novo', value = 'Adiciona uma nova pessoa ao jogo (já é adicionado 1 ponto automaicamente.). Ex: ?novo NomeDaPessoa', inline = False)
-        help_embed.add_field(name = '?pontos', value = 'Lista os pontos por participante. Ex: ?pontos', inline = False)
-        help_embed.add_field(name = '?remover', value = 'Remove uma pessoa do jogo. Ex: ?remover NomeDaPessoa', inline = False)
-        help_embed.add_field(name = '?add', value = 'Adiciona pontos a uma pessoa. Ex: ?add 1 NomeDaPessoa (1 - 9 pontos)', inline = False)
-        help_embed.add_field(name = '?retirar', value = 'Retira pontos de uma pessoa (não é possível deixa-la com pontos negativos.). Ex: ?retirar 1 NomeDaPessoa (1 - 9 pontos)', inline = False)
+        help_embed.add_field(name = '?novo', value = 'Adiciona uma nova pessoa ao jogo (já é adicionado 1 ponto automaticamente.).\nEx: ?novo NomeDaPessoa', inline = False)
+        help_embed.add_field(name = '?pontos', value = 'Lista os pontos por participante.\nEx: ?pontos', inline = False)
+        help_embed.add_field(name = '?remover', value = 'Remove uma pessoa do jogo e exclui sua pontuação.\nEx: ?remover NomeDaPessoa', inline = False)
+        help_embed.add_field(name = '?add', value = 'Adiciona pontos a uma pessoa.\nEx: ?add 1 NomeDaPessoa (1 - 9 pontos)', inline = False)
+        help_embed.add_field(name = '?retirar', value = 'Retira pontos de uma pessoa.\nEx: ?retirar 1 NomeDaPessoa (1 - 9 pontos)', inline = False)
         await message.channel.send(embed = help_embed)
         print(hora() + ' - O ' + message.author.name + ' usou o ?help.')
 
-bot.run('Njc5MTUzNzU0MTc1NzAxMDMy.XlhpJw.IE_uAMeCzNdknm2CktZbrdeXSpA')
+    if message.content.lower().startswith('?reset'):
+        if message.author.id == 232142342591741952:
+            reset_embedt = discord.Embed(
+                title = 'Os nomes e pontos foram limpos!',
+                color = 0x22a7f0
+            )
+            await message.channel.send(embed = reset_embedt)
+            print(hora() + ' - O ' + message.author.name + ' resetou o jogo.')
+            print(lista_nomes)
+            print(lista_pontos)
+            lista_nomes.clear()
+            lista_pontos.clear()
+        else:
+            reset_embedf = discord.Embed(
+                title = 'Você não tem permissão de usar esse comando',
+                color = 0x22a7f0
+            )
+            await message.channel.send(embed = reset_embedf)
+            print(hora() + ' - O ' + message.author.name + ' tentou resetar o jogo.')
+            
+bot.run('Njc5MTUzNzU0MTc1NzAxMDMy.XllkjA.03YWg6le-yv4GhaFEzuiiKjwW-U')
