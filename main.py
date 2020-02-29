@@ -46,6 +46,15 @@ async def erro_nome(message):
 @bot.event
 async def on_message(message):
 
+    if message.content.lower().startswith('?ping'):
+        ping_embed = discord.Embed(
+            title = '⌛️ %i ms' %int((bot.latency * 1000)),
+            color = 0x22a7f0
+        )
+        ping_embed.set_footer(text = '?help para ajuda')
+        await message.channel.send(embed = ping_embed)
+        print(hora() + ' - O ' + message.author.name + ' pingou.')
+
     if message.content.lower().startswith('?novo'):
         nome = capitalizacao(message.content[6:])
         if nome in lista_nomes:
@@ -225,27 +234,37 @@ async def on_message(message):
         help_embed.add_field(name = '?remover', value = 'Remove uma pessoa do jogo e exclui sua pontuação.\nEx: ?remover NomeDaPessoa', inline = False)
         help_embed.add_field(name = '?add', value = 'Adiciona pontos a uma pessoa.\nEx: ?add 1 NomeDaPessoa (1 - 9 pontos)', inline = False)
         help_embed.add_field(name = '?retirar', value = 'Retira pontos de uma pessoa.\nEx: ?retirar 1 NomeDaPessoa (1 - 9 pontos)', inline = False)
+        help_embed.add_field(name = '?ping', value = 'Visualiza a latência do Bot.\nEx: ?ping', inline= False)
         await message.channel.send(embed = help_embed)
         print(hora() + ' - O ' + message.author.name + ' usou o ?help.')
 
     if message.content.lower().startswith('?reset'):
-        if message.author.id == 232142342591741952:
-            reset_embedt = discord.Embed(
-                title = 'Os nomes e pontos foram limpos!',
-                color = 0x22a7f0
-            )
-            await message.channel.send(embed = reset_embedt)
-            print(hora() + ' - O ' + message.author.name + ' resetou o jogo.')
-            print(lista_nomes)
-            print(lista_pontos)
-            lista_nomes.clear()
-            lista_pontos.clear()
+        if len(lista_nomes) != 0:
+            if message.author.id == 232142342591741952:
+                reset_embedt = discord.Embed(
+                    title = 'Os nomes e pontos foram limpos!',
+                    color = 0x22a7f0
+                )
+                await message.channel.send(embed = reset_embedt)
+                print(hora() + ' - O ' + message.author.name + ' resetou o jogo.')
+                print(lista_nomes)
+                print(lista_pontos)
+                lista_nomes.clear()
+                lista_pontos.clear()
+            else:
+                reset_embedf = discord.Embed(
+                    title = 'Você não tem permissão de usar esse comando',
+                    color = 0x22a7f0
+                )
+                await message.channel.send(embed = reset_embedf)
+                print(hora() + ' - O ' + message.author.name + ' tentou resetar o jogo.')
         else:
-            reset_embedf = discord.Embed(
-                title = 'Você não tem permissão de usar esse comando',
+            reset_embedff = discord.Embed(
+                title = 'Não há ninguém no jogo!',
                 color = 0x22a7f0
             )
-            await message.channel.send(embed = reset_embedf)
-            print(hora() + ' - O ' + message.author.name + ' tentou resetar o jogo.')
+            reset_embedff.set_footer(text = '?help para ajuda')
+            await message.channel.send(embed = reset_embedff)
+            print(hora() + ' - O ' + message.author.name + ' tentou resetar o jogo, mas não tinha ninguém participando.')
             
 bot.run('Njc5MTUzNzU0MTc1NzAxMDMy.XllkjA.03YWg6le-yv4GhaFEzuiiKjwW-U')
