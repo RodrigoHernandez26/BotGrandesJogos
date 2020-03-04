@@ -5,6 +5,10 @@ from datetime import datetime
 bot = discord.Client()
 lista_nomes = []
 lista_pontos = []
+lista_nomevar = []
+lista_votovar = []
+num_p, num_n = 0, 0
+confirm_var = False
 
 @bot.event
 async def on_ready():
@@ -53,7 +57,7 @@ async def on_message(message):
         )
         ping_embed.set_footer(text = '?help para ajuda')
         await message.channel.send(embed = ping_embed)
-        print(hora() + ' - O ' + message.author.name + ' pingou.')
+        print(hora() + ' - ' + message.author.name + ' pingou.')
 
     if message.content.lower().startswith('?novo'):
         nome = capitalizacao(message.content[6:])
@@ -64,7 +68,7 @@ async def on_message(message):
             )
             novo_embedt.set_footer(text = '?help para ajuda')
             await message.channel.send(embed = novo_embedt)
-            print(hora() + ' - O ' + message.author.name + ' tentou adicionar o ' + nome + ' novamente ao jogo.')
+            print(hora() + ' - ' + message.author.name + ' tentou adicionar o ' + nome + ' novamente ao jogo.')
         else:
             lista_nomes.append(nome)
             lista_pontos.append('1')
@@ -75,7 +79,7 @@ async def on_message(message):
             )
             novo_embedf.set_footer(text = '?help para ajuda')
             await message.channel.send(embed = novo_embedf)
-            print(hora() + ' - O ' + message.author.name + ' adicionou o ' + nome + ' ao jogo.')
+            print(hora() + ' - ' + message.author.name + ' adicionou o ' + nome + ' ao jogo.')
                  
     if message.content.lower().startswith('?pontos'):
         if len(lista_nomes) == 0:
@@ -85,7 +89,7 @@ async def on_message(message):
             )
             pnt_embedf.set_footer(text = '?help para ajuda')
             await message.channel.send(embed = pnt_embedf)
-            print(hora() + ' - O ' + message.author.name + ' solicitou a listagem dos pontos dos participantes do jogo, mas não tinha ninguém participando.')
+            print(hora() + ' - ' + message.author.name + ' solicitou a listagem dos pontos dos participantes do jogo, mas não tinha ninguém participando.')
         else:
             pnt_embed = discord.Embed(
                 title = 'Os pontos são: ',
@@ -102,7 +106,7 @@ async def on_message(message):
                 else:
                     pnt_embed.add_field(name = lista_nomes[i], value = lista_pontos[i], inline= True)
             await message.channel.send(embed = pnt_embed)
-            print(hora() + ' - O ' + message.author.name + ' solicitou a listagem dos pontos dos participantes do jogo.')
+            print(hora() + ' - ' + message.author.name + ' solicitou a listagem dos pontos dos participantes do jogo.')
 
     if message.content.lower().startswith('?remover'):
         nome = capitalizacao(message.content[9:])
@@ -123,7 +127,7 @@ async def on_message(message):
             )
             remover_embedt.set_footer(text = '?help para ajuda')
             await message.channel.send(embed = remover_embedt)
-            print(hora() + ' - O ' + message.author.name + ' retirou o ' + nome + ' do jogo.')
+            print(hora() + ' - ' + message.author.name + ' retirou o ' + nome + ' do jogo.')
 
     if message.content.lower().startswith('?add'):
         numero = message.content[5:6]
@@ -135,7 +139,7 @@ async def on_message(message):
             )
             add_erro.set_footer(text = '?help para ajuda')
             await message.channel.send(embed = add_erro)
-            print(hora() + ' - O ' + message.author.name + ' tentou adicionar 0 pontos do ' + nome + '.')
+            print(hora() + ' - ' + message.author.name + ' tentou adicionar 0 pontos do ' + nome + '.')
         else:
             verif = False
             try:
@@ -144,9 +148,9 @@ async def on_message(message):
             except ValueError:
                 await erro_nome(message)
                 if numero == 1:
-                    print(hora() + ' - O ' + message.author.name + ' tentou adicionar 1 ponto ao ' + nome + ', mas não tinha ninguém com esse nome.')
+                    print(hora() + ' - ' + message.author.name + ' tentou adicionar 1 ponto ao ' + nome + ', mas não tinha ninguém com esse nome.')
                 else:
-                    print(hora() + ' - O ' + message.author.name + ' tentou adicionar ' + numero + ' pontos ao ' + nome + ', mas não tinha ninguém com esse nome.')
+                    print(hora() + ' - ' + message.author.name + ' tentou adicionar ' + numero + ' pontos ao ' + nome + ', mas não tinha ninguém com esse nome.')
             if verif:
                 conc = int(lista_pontos[pos])
                 lista_pontos[pos] = conc + int(numero)
@@ -163,10 +167,10 @@ async def on_message(message):
                 addt_embeds.set_footer(text = '?help para ajuda')
                 if numero == '1':
                     await message.channel.send(embed = addt_embeds)
-                    print(hora() + ' - O ' + message.author.name + ' adicionou 1 ponto ao ' + nome + ', ele tem ' + str(lista_pontos[pos]) + ' agora.')
+                    print(hora() + ' - ' + message.author.name + ' adicionou 1 ponto ao ' + nome + ', ele tem ' + str(lista_pontos[pos]) + ' agora.')
                 else:
                     await message.channel.send(embed = addt_embedp)
-                    print(hora() + ' - O ' + message.author.name + ' adicionou ' + numero + ' pontos ao ' + nome + ', ele tem ' + str(lista_pontos[pos]) + ' agora.')
+                    print(hora() + ' - ' + message.author.name + ' adicionou ' + numero + ' pontos ao ' + nome + ', ele tem ' + str(lista_pontos[pos]) + ' agora.')
 
     if message.content.lower().startswith('?retirar'):
         numero = message.content[9:10]
@@ -178,7 +182,7 @@ async def on_message(message):
             )
             retirar_erro.set_footer(text = '?help para ajuda')
             await message.channel.send(embed = retirar_erro)
-            print(hora() + ' - O ' + message.author.name + ' tentou retirar 0 pontos do ' + nome + '.')
+            print(hora() + ' - ' + message.author.name + ' tentou retirar 0 pontos do ' + nome + '.')
         else:
             verif = False
             try:
@@ -187,9 +191,9 @@ async def on_message(message):
             except ValueError:
                 await erro_nome(message)
                 if numero == '1':
-                    print(hora() + ' - O ' + message.author.name + ' tentou retirar 1 ponto ao ' + nome + ', mas não tinha ninguém com esse nome.')
+                    print(hora() + ' - ' + message.author.name + ' tentou retirar 1 ponto ao ' + nome + ', mas não tinha ninguém com esse nome.')
                 else:
-                    print(hora() + ' - O ' + message.author.name + ' tentou retirar ' + numero + ' pontos ao ' + nome + ', mas não tinha ninguém com esse nome.')
+                    print(hora() + ' - ' + message.author.name + ' tentou retirar ' + numero + ' pontos ao ' + nome + ', mas não tinha ninguém com esse nome.')
             if verif:
                 conc = int(lista_pontos[pos])
                 if conc == 0:
@@ -200,9 +204,9 @@ async def on_message(message):
                     retirar_erro.set_footer(text = '?help para ajuda')
                     await message.channel.send(embed = retirar_erro)
                     if numero == '1':
-                        print(hora() + ' - O ' + message.author.name + ' tentou retirar 1 ponto ao ' + nome + ', mas ele já tinha 0 pontos.')
+                        print(hora() + ' - ' + message.author.name + ' tentou retirar 1 ponto ao ' + nome + ', mas ele já tinha 0 pontos.')
                     else:
-                        print(hora() + ' - O ' + message.author.name + ' tentou retirar ' + numero + ' pontos ao ' + nome + ', mas ele já tinha 0 pontos.')
+                        print(hora() + ' - ' + message.author.name + ' tentou retirar ' + numero + ' pontos ao ' + nome + ', mas ele já tinha 0 pontos.')
                 else:
                     lista_pontos[pos] = conc - int(numero)
                     organizar(lista_nomes, lista_pontos)
@@ -218,10 +222,10 @@ async def on_message(message):
                     retirar_embedp.set_footer(text = '?help para ajuda')
                     if numero == '1':
                         await message.channel.send(embed = retirar_embeds)
-                        print(hora() + ' - O ' + message.author.name + ' retirou 1 ponto ao ' + nome + ', ele tem ' + str(lista_pontos[pos]) + ' agora.')
+                        print(hora() + ' - ' + message.author.name + ' retirou 1 ponto ao ' + nome + ', ele tem ' + str(lista_pontos[pos]) + ' agora.')
                     else:
                         await message.channel.send(embed = retirar_embedp)
-                        print(hora() + ' - O ' + message.author.name + ' retirou ' + numero + ' pontos ao ' + nome + ', ele tem ' + str(lista_pontos[pos]) + ' agora.')
+                        print(hora() + ' - ' + message.author.name + ' retirou ' + numero + ' pontos ao ' + nome + ', ele tem ' + str(lista_pontos[pos]) + ' agora.')
 
     if message.content.lower().startswith('?help'):
         help_embed = discord.Embed(
@@ -234,9 +238,11 @@ async def on_message(message):
         help_embed.add_field(name = '?remover', value = 'Remove uma pessoa do jogo e exclui sua pontuação.\nEx: ?remover NomeDaPessoa', inline = False)
         help_embed.add_field(name = '?add', value = 'Adiciona pontos a uma pessoa.\nEx: ?add 1 NomeDaPessoa (1 - 9 pontos)', inline = False)
         help_embed.add_field(name = '?retirar', value = 'Retira pontos de uma pessoa.\nEx: ?retirar 1 NomeDaPessoa (1 - 9 pontos)', inline = False)
+        help_embed.add_field(name = '?var', value = 'Inicia uma votação. (Necessário 5 votos para anular ou confirmar um var.)\nEx: ?var "motivo"', inline = False)
+        help_embed.add_field(name = '?cancelarvar', value = 'Cancela o var que você criou. (Somente a pessoa que iniciou o var pode cancela-lo).\nEx: ?cancelarvar', inline = False)
         help_embed.add_field(name = '?ping', value = 'Visualiza a latência do Bot.\nEx: ?ping', inline= False)
         await message.channel.send(embed = help_embed)
-        print(hora() + ' - O ' + message.author.name + ' usou o ?help.')
+        print(hora() + ' - ' + message.author.name + ' usou o ?help.')
 
     if message.content.lower().startswith('?reset'):
         if len(lista_nomes) != 0:
@@ -246,7 +252,7 @@ async def on_message(message):
                     color = 0x22a7f0
                 )
                 await message.channel.send(embed = reset_embedt)
-                print(hora() + ' - O ' + message.author.name + ' resetou o jogo.')
+                print(hora() + ' - ' + message.author.name + ' resetou o jogo.')
                 print(lista_nomes)
                 print(lista_pontos)
                 lista_nomes.clear()
@@ -257,7 +263,7 @@ async def on_message(message):
                     color = 0x22a7f0
                 )
                 await message.channel.send(embed = reset_embedf)
-                print(hora() + ' - O ' + message.author.name + ' tentou resetar o jogo.')
+                print(hora() + ' - ' + message.author.name + ' tentou resetar o jogo.')
         else:
             reset_embedff = discord.Embed(
                 title = 'Não há ninguém no jogo!',
@@ -265,6 +271,145 @@ async def on_message(message):
             )
             reset_embedff.set_footer(text = '?help para ajuda')
             await message.channel.send(embed = reset_embedff)
-            print(hora() + ' - O ' + message.author.name + ' tentou resetar o jogo, mas não tinha ninguém participando.')
-            
+            print(hora() + ' - ' + message.author.name + ' tentou resetar o jogo, mas não tinha ninguém participando.')
+
+    if message.content.lower().startswith('?var'):
+        motivo = message.content[5:]
+        motivo_embed = discord.Embed(
+            title = 'Nova votação criada:',
+            color = 0x22a7f0
+        )
+        motivo_embed.set_footer(text = '?help para ajuda')
+        motivo_embed.add_field(name = message.author.name + ' criou a votação', value = motivo, inline=False)
+        msg_bot = await message.channel.send(embed = motivo_embed)
+        print(hora() + ' - ' + message.author.name + ' criou um novo var.')
+        global autor_var
+        autor_var = message.author.name
+        global confirm_var
+        confirm_var = True
+        global var_mensagem
+        var_mensagem = message
+        global msg_id
+        msg_id = msg_bot.id
+        await msg_bot.add_reaction('✅')
+        await msg_bot.add_reaction('❌')
+
+    if message.content.lower().startswith('?cancelarvar'):
+        global num_p
+        global num_n
+        if confirm_var and message.author.name == autor_var:
+            cancelvar_embed = discord.Embed(
+                title = 'O var foi cancelado!',
+                color = 0x22a7f0
+            )
+            cancelvar_embed.set_footer(text = '?help para ajuda')
+            await message.channel.send(embed = cancelvar_embed)
+            print(hora() + ' - ' + message.author.name + ' cancelou seu var.')
+            lista_nomevar.clear()
+            lista_votovar.clear()
+            num_n, num_p = 0, 0
+            msg_id = None
+            confirm_var = False
+        else:
+            if not confirm_var:
+                semvar_embed = discord.Embed(
+                    title = 'Não existe uma votação em andamento!',
+                    color =  0x22a7f0
+                )
+                semvar_embed.set_footer(text = '?help para ajuda')
+                await message.channel.send(embed = semvar_embed)
+                print(hora() + ' - ' + message.author.name + ' tentou cancelar um var que não existe.')
+            else:
+                autorcancel_embed = discord.Embed(
+                    title = 'Não foi você que iniciou essa votação!',
+                    color = 0x22a7f0
+                )
+                autorcancel_embed.set_footer(text = '?help para ajuda')
+                await message.channel.send(embed = autorcancel_embed)
+                print(hora() + ' - ' + message.author.name + ' tentou cancelar um var que não iniciou.')
+               
+@bot.event
+async def on_reaction_add(reaction, user):
+    global num_n
+    global num_p
+    global var_mensagem
+    global confirm_var
+    global msg_id
+    if msg_id == reaction.message.id and not user.name in lista_nomevar and user.name != 'BotPontosTest':
+        lista_nomevar.append(user.name)
+        lista_votovar.append(reaction.emoji)
+        if num_p < 5 and num_n < 5:
+            if reaction.emoji == '✅':
+                votopadd_embed = discord.Embed(
+                    title = user.name + ' votou ' + reaction.emoji,
+                    color = 0x22a7f0
+                )
+                votopadd_embed.set_footer(text = '?help para ajuda')
+                await var_mensagem.channel.send(embed = votopadd_embed)
+                print(hora() + ' - ' + user.name + ' votou favoravelmente ao var.')
+                num_p = reaction.count - 1
+            elif reaction.emoji == '❌':
+                votonadd_embed = discord.Embed(
+                    title = user.name + ' votou ' + reaction.emoji,
+                    color = 0x22a7f0
+                )
+                votonadd_embed.set_footer(text = '?help para ajuda')
+                await var_mensagem.channel.send(embed = votonadd_embed)
+                print(hora() + ' - ' + user.name + ' votou negativamente ao var.')
+                num_n = reaction.count - 1
+            print(num_n)
+            print(num_p)
+        else:
+            if num_p == 5:
+                confirm = 'Confirmado!'
+            else:
+                confirm = 'Anulado!'
+            finalvar_embed = discord.Embed(
+                title = 'Resultado do var:',
+                color = 0x22a7f0                   
+            )
+            finalvar_embed.set_footer(text = '?help para ajuda')
+            for i in range (len(lista_nomevar)):
+                finalvar_embed.add_field(name = lista_nomevar[i], value = lista_votovar[i], inline = False)
+            finalvar_embed.add_field(name = '\nO resultado final é: ', value = confirm, inline= False)
+            await var_mensagem.channel.send(embed = finalvar_embed)
+            print(hora() + ' - Finalizado as votações do var: ' + confirm)
+            confirm_var = False
+            lista_nomevar.clear()
+            lista_votovar.clear()
+            num_n, num_p = 0, 0
+    else:
+        if user.name in lista_nomevar:
+            pos = lista_nomevar.index(user.name)
+            votoduplicado_embed = discord.Embed(
+                title = 'Você já votou nesse var: ' + lista_nomevar[pos] + ' --> ' + lista_votovar[pos],
+                color = 0x22a7f0 
+            )
+            votoduplicado_embed.set_footer(text = '?help para ajuda')
+            await var_mensagem.channel.send(embed = votoduplicado_embed)
+            print(hora() + ' - ' + var_mensagem.author.name + ' tentou votar em duas opções.')
+
+@bot.event
+async def on_reaction_remove(reaction, user):
+    global num_p
+    global num_n
+    global var_mensagem
+    try:
+        pos = lista_nomevar.index(user.name)
+        verif = True
+    except ValueError:
+        verif = False
+    if verif:
+        emoji_react = lista_votovar[pos]
+        if reaction.emoji == emoji_react:
+            votoremovido_embed = discord.Embed(
+                title = 'O voto ' + lista_votovar[pos] + ' do ' + lista_nomevar[pos] + ' foi removido',
+                color = 0x22a7f0
+            )
+            votoremovido_embed.set_footer(text = '?help para ajuda')
+            await var_mensagem.channel.send(embed = votoremovido_embed)
+            print(hora() + ' - ' + user.name + ' retirou o voto dele.')
+            del(lista_nomevar[pos])
+            del(lista_votovar[pos])
+
 bot.run('Njc5MTUzNzU0MTc1NzAxMDMy.XllkjA.03YWg6le-yv4GhaFEzuiiKjwW-U')
