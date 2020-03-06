@@ -460,6 +460,7 @@ async def on_reaction_add(reaction, user):
             for i in range (len(lista_nomevar)):
                 motivo_embed.add_field(name = lista_nomevar[i], value = lista_votovar[i], inline = False)
             await msg_bot.edit(embed = motivo_embed)
+            print(hora() + ' - ' + var_mensagem.author.name + ' votou: ' + reaction.emoji)
 
             num_p = reaction.count - 1
 
@@ -470,6 +471,7 @@ async def on_reaction_add(reaction, user):
             for i in range (len(lista_nomevar)):
                 motivo_embed.add_field(name = lista_nomevar[i], value = lista_votovar[i], inline = False)
             await msg_bot.edit(embed = motivo_embed)
+            print(hora() + ' - ' + var_mensagem.author.name + ' votou: ' + reaction.emoji)
 
             num_n = reaction.count - 1
 
@@ -542,5 +544,6 @@ async def on_reaction_remove(reaction, user):
             for i in range (len(lista_nomevar)):
                 motivo_embed.add_field(name = lista_nomevar[i], value = lista_votovar[i], inline = False)
             await msg_bot.edit(embed = motivo_embed)
+            print(hora() + ' - ' + var_mensagem.author.name + ' retirou o voto: ' + reaction.emoji)
 
 bot.run('Njc5MTUzNzU0MTc1NzAxMDMy.XllkjA.03YWg6le-yv4GhaFEzuiiKjwW-U')
