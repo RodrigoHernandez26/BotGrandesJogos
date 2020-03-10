@@ -75,18 +75,25 @@ class Var(commands.Cog):
             var = json.load(f)
 
         if self.msg_bot.id == reaction.message.id and not user.name in var['Nomes'] and user.name != 'BotPontosTest':
-            var['Nomes'].append(user.name)
-            var['Votos'].append(reaction.emoji)
-
-            with open('var.json', 'w') as f:
-                json.dump(var, f, indent= 4)
-
+            
             if reaction.emoji == '\u2705':
+                var['Nomes'].append(user.name)
+                var['Votos'].append(reaction.emoji)
+
+                with open('var.json', 'w') as f:
+                    json.dump(var, f, indent= 4)
+
                 await self.msg_bot.edit(embed = criar_var(self.msg, self.autor))
                 print(f'{hora()} - {user.name} votou {reaction.emoji} no var.')
                 self.num_p = reaction.count - 1
 
             elif reaction.emoji == '\u274c':
+                var['Nomes'].append(user.name)
+                var['Votos'].append(reaction.emoji)
+
+                with open('var.json', 'w') as f:
+                    json.dump(var, f, indent= 4)
+
                 await self.msg_bot.edit(embed = criar_var(self.msg, self.autor))
                 print(f'{hora()} - {user.name} votou {reaction.emoji} no var.')
                 self.num_n = reaction.count - 1
