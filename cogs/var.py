@@ -122,7 +122,7 @@ class Var(commands.Cog):
                 if self.nome == pontos['Nomes'][i]:
                     x = i
 
-            pontos['Pontos'] = pontos['Pontos'][x] + self.ponto
+            pontos['Pontos']['x'] = pontos['Pontos'][x] + self.ponto
 
             with open('pontos.json', 'w') as p:
                 json.dump(pontos, p, indent= 4)
