@@ -19,7 +19,7 @@ class Var(commands.Cog):
         global var_on
         if not var_on:
 
-            self.msg_bot = await ctx.send(embed = criar_var(msg, self.autor))
+            self.msg_bot = await ctx.send(embed = criar_var(msg, self.autor, self.nome, self.ponto))
             print(f'{hora()} - {ctx.author.name} criou um var.')
 
             await self.msg_bot.add_reaction('✅')
@@ -74,8 +74,8 @@ class Var(commands.Cog):
         with open('var.json', 'r') as f:
             var = json.load(f)
 
-        if self.msg_bot.id == reaction.message.id and not user.name in var['Nomes'] and user.name != 'BotPontosTest':
-            
+        if self.msg_bot.id == reaction.message.id and not user.name in var['Nomes'] and user.name != self.msg_bot.author.name:
+            print(self.msg_bot.author.name)
             if reaction.emoji == '\u2705':
                 var['Nomes'].append(user.name)
                 var['Votos'].append(reaction.emoji)
@@ -83,7 +83,7 @@ class Var(commands.Cog):
                 with open('var.json', 'w') as f:
                     json.dump(var, f, indent= 4)
 
-                await self.msg_bot.edit(embed = criar_var(self.msg, self.autor))
+                await self.msg_bot.edit(embed = criar_var(self.msg, self.autor, self.nome, self.ponto))
                 print(f'{hora()} - {user.name} votou {reaction.emoji} no var.')
                 self.num_p = reaction.count - 1
 
@@ -94,7 +94,7 @@ class Var(commands.Cog):
                 with open('var.json', 'w') as f:
                     json.dump(var, f, indent= 4)
 
-                await self.msg_bot.edit(embed = criar_var(self.msg, self.autor))
+                await self.msg_bot.edit(embed = criar_var(self.msg, self.autor, self.nome, self.ponto))
                 print(f'{hora()} - {user.name} votou {reaction.emoji} no var.')
                 self.num_n = reaction.count - 1
 
@@ -163,7 +163,7 @@ class Var(commands.Cog):
                 with open('var.json', 'w') as f:
                     json.dump(var, f, indent= 4)
                 
-                await self.msg_bot.edit(embed = criar_var(self.msg, self.autor))
+                await self.msg_bot.edit(embed = criar_var(self.msg, self.autor, self.nome, self.ponto))
 
 def setup(client):
     client.add_cog(Var(client))

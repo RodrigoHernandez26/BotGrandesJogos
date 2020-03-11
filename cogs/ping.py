@@ -15,7 +15,6 @@ class Ping(commands.Cog):
         )
         await ctx.send(embed = ping_embed)
         print(f'{hora()} - {ctx.author.name} pingou.')
-
     
 def setup(client):
     client.add_cog(Ping(client))
