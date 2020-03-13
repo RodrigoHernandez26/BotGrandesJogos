@@ -29,7 +29,7 @@ class Retirar(commands.Cog):
                     if pontos['Nomes'][i] == nome:
                         x = i
 
-                if pontos['Pontos'][x] != 0:
+                if pontos['Pontos'][x] - int(ponto) <= 0:
 
                     pontos['Pontos'][x] = pontos['Pontos'][x] - int(ponto)
 

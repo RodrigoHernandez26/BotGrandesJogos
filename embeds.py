@@ -201,10 +201,12 @@ def criar_var(motivo, autor, nome, ponto):
     )
     embed.set_footer(text = '?help para ajuda')
     embed.add_field(name = autor + ' criou a votação', value = motivo, inline=False)
+
     if ponto == 1:
         embed.add_field(name = 'Esse var vale:', value = f'{ponto} ponto para o {nome}', inline=False)
     else:
         embed.add_field(name = 'Esse var vale:', value = f'{ponto} pontos para o {nome}', inline=False)
+
     for i in range(len(var['Nomes'])):
         embed.add_field(name = var['Nomes'][i], value = var['Votos'][i], inline= False)
     embed.set_image(url = 'https://media.tenor.com/images/8d649d1b182b5dc7c0befe0682c5c3cb/tenor.gif')
@@ -224,7 +226,7 @@ def var_fail():
 
 #*************************************************#
 
-def var_final(motivo, autor, resultado):
+def var_final(motivo, autor, resultado, nome, ponto):
 
     with open('var.json', 'r') as f:
         var = json.load(f)
@@ -235,6 +237,11 @@ def var_final(motivo, autor, resultado):
     )
     embed.set_footer(text = '?help para ajuda')
     embed.add_field(name = autor + ' criou a votação', value = motivo, inline=False)
+
+    if ponto == 1:
+        embed.add_field(name = 'Esse var vale:', value = f'{ponto} ponto para o {nome}', inline=False)
+    else:
+        embed.add_field(name = 'Esse var vale:', value = f'{ponto} pontos para o {nome}', inline=False)
 
     for i in range (len(var['Nomes'])):
         embed.add_field(name = var['Nomes'][i], value = var['Votos'][i], inline = False)

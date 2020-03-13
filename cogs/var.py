@@ -109,25 +109,25 @@ class Var(commands.Cog):
 
             if self.num_p == 5:
                 resultado = 'Confirmado!'
+                
+                with open('pontos.json', 'r') as p:
+                    pontos = json.load(p)
+
+                for i in range(len(pontos['Nomes'])):
+                    if self.nome == pontos['Nomes'][i]:
+                        x = i
+
+                pontos['Pontos'][x] = pontos['Pontos'][x] + self.ponto
+
+                with open('pontos.json', 'w') as p:
+                    json.dump(pontos, p, indent= 4)
+
+                organizar()
             else:
                 resultado = 'Anulado!'
 
-            await self.msg_bot.channel.send(embed = var_final(self.msg, self.autor, resultado))
+            await self.msg_bot.channel.send(embed = var_final(self.msg, self.autor, resultado, self.nome, self.ponto))
             print(f'{hora()} - A votação foi encerrada, o resultado foi: {resultado}')
-
-            with open('pontos.json', 'r') as p:
-                pontos = json.load(p)
-
-            for i in range(len(pontos['Nomes'])):
-                if self.nome == pontos['Nomes'][i]:
-                    x = i
-
-            pontos['Pontos']['x'] = pontos['Pontos'][x] + self.ponto
-
-            with open('pontos.json', 'w') as p:
-                json.dump(pontos, p, indent= 4)
-
-            organizar()
 
             var_on = False
 
