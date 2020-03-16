@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
-from utility import capitalizacao, hora, organizar, json
-from embeds import add_zero, add_singular, add_plural, erro
+import asyncio
+from utility import capitalizacao, hora, json, add_erro, add_singular, add_plural
 
 class Add(commands.Cog):
 
@@ -11,50 +11,63 @@ class Add(commands.Cog):
     @commands.command()
     async def add(self, ctx, ponto, nome):
 
-        with open('pontos.json', 'r') as f:
-            pontos = json.load(f)
+        with open('data.json', 'r') as f: pontos = json.load(f)
+
+        with open('data.json', 'r') as l: log = json.load(l)
+
+        canal_log = self.client.get_channel(log['log'])
 
         nome = capitalizacao(nome)
 
-        if int(ponto) == 0:
+        try:
+            int(ponto)
 
-            await ctx.channel.send(embed = add_zero())
-            print(f'{hora()} - {ctx.author.name} tentou adicionar 0 pontos ao {nome}.')
+        except ValueError:
+            await canal_log.send(f'{hora()} - {ctx.author.name} passou parametros errados.')
+            await ctx.channel.send(embed = add_erro(nome, ponto))
+            return
+
+        try:
+            assert int(ponto) > 0
+
+            if int(ponto) > 100:
+                msg_troll = await ctx.channel.send('Para de trolar ae corno')
+                await asyncio.sleep(2)
+                await msg_troll.delete()
+                return
+
+            verif = False
+            for name in pontos['pnts']:
+                if nome == name['nome']:
+                    verif = True
             
+            if not verif:
+                await ctx.channel.send(embed = add_erro(nome, ponto))
+                await canal_log.send(f'{hora()} - {ctx.author.name} passou parametros errados.')
+                return
+
+        except AssertionError:
+
+            await ctx.channel.send(embed = add_erro(nome, ponto))
+            await canal_log.send(f'{hora()} - {ctx.author.name} passou parametros errados.')
+            return
+
+        for name in pontos['pnts']:
+            if nome == name['nome']:
+                name['ponto'] += int(ponto)
+                finalponto = name['ponto']
+
+        with open('data.json', 'w') as f: json.dump(pontos, f, indent= 4)
+
+        if int(ponto) == 1:
+
+            await ctx.channel.send(embed = add_singular(nome))
+            await canal_log.send(f'{hora()} - {ctx.author.name} adicinou 1 ponto ao {nome}, ele tem {finalponto} agora.')
+
         else:
 
-            if nome in pontos['Nomes']:
-
-                for i in range(len(pontos['Nomes'])):
-                    if pontos['Nomes'][i] == nome:
-                        x = i
-                    
-                pontos['Pontos'][x] = pontos['Pontos'][x] + int(ponto)
-
-                with open('pontos.json', 'w') as f:
-                    json.dump(pontos, f, indent= 4)
-
-                organizar()
-
-                if int(ponto) == 1:
-
-                    await ctx.channel.send(embed = add_singular(nome))
-                    print(hora() + ' - ' + ctx.author.name + ' adicionou 1 ponto ao ' + nome + ', ele tem ' + str(pontos['Pontos'][x]) + ' agora.')
-
-                else:
-
-                    await ctx.channel.send(embed = add_plural(nome, ponto))
-                    print(hora() + ' - ' + ctx.author.name + ' adicionou ' + ponto + ' pontos ao ' + nome + ', ele tem ' + str(pontos['Pontos'][x]) + ' agora.')
-
-            else:  
-
-                await ctx.channel.send(embed = erro(nome))
-
-                if int(ponto) == 1:
-                    print(f'{hora()} - {ctx.author.name} tentou adicionar 1 ponto ao {nome}, mas não tinha ninguém com esse nome.')
-                else:
-                    print(f'{hora()} - {ctx.author.name} tentou adicionar {ponto} pontos ao {nome}, mas não tinha ninguém com esse nome.')
-
+            await ctx.channel.send(embed = add_plural(nome, ponto))
+            await canal_log.send(f'{hora()} - {ctx.author.name} adicinou {ponto} pontos ao {nome}, ele tem {finalponto} agora.')
 
 def setup(client):
     client.add_cog(Add(client))

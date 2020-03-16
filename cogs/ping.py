@@ -9,12 +9,16 @@ class Ping(commands.Cog):
 
     @commands.command()
     async def ping(self, ctx):
+
+        with open('data.json', 'r') as l: log = json.load(l)
+        canal_log = self.client.get_channel(log['log'])
+
         ping_embed = discord.Embed(
             title = f'⌛️ {round(self.client.latency * 1000)} ms',
             color = 0x22a7f0
         )
         await ctx.send(embed = ping_embed)
-        print(f'{hora()} - {ctx.author.name} pingou.')
+        await canal_log.send(f'{hora()} - {ctx.author.name} pingou.')
     
 def setup(client):
     client.add_cog(Ping(client))

@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
-from utility import capitalizacao, hora, organizar, json
-from embeds import retirar_erro, retirar_singular, retirar_plural, retirar_negativo, erro
+from utility import capitalizacao, hora, json, retirar_erro, retirar_singular, retirar_plural
 
 class Retirar(commands.Cog):
 
@@ -11,56 +10,58 @@ class Retirar(commands.Cog):
     @commands.command()
     async def retirar(self, ctx, ponto, nome):
 
-        with open('pontos.json', 'r') as f:
-            pontos = json.load(f)
+        with open('data.json', 'r') as f: pontos = json.load(f)
+
+        with open('data.json', 'r') as l: log = json.load(l)
+        canal_log = self.client.get_channel(log['log'])
 
         nome = capitalizacao(nome)
 
-        if int(ponto) == 0:
+        try:
+            int(ponto)
 
-            await ctx.channel.send(embed = retirar_erro())
-            print(f'{hora()} - {ctx.author.name} tentou retirar 0 pontos do {nome}.')
+        except ValueError:
+            await ctx.channel.send(embed = retirar_erro(nome, ponto))
+            await canal_log.send(f'{hora()} - {ctx.author.name} passou parametros errados.')
+            return  
+        
+        try:
 
+            assert int(ponto) > 0
+
+            verif = False
+            for name in pontos['pnts']:
+                if nome == name['nome']:
+                    verif = True
+                    assert name['ponto'] - int(ponto) >= 0
+            
+            if not verif:
+                await ctx.channel.send(embed = retirar_erro(nome, ponto))
+                await canal_log.send(f'{hora()} - {ctx.author.name} passou parametros errados.')
+                return
+
+        except AssertionError:
+
+            await ctx.channel.send(embed = retirar_erro(nome, ponto))
+            await canal_log.send(f'{hora()} - {ctx.author.name} passou parametros errados.')
+            return
+
+        for name in pontos['pnts']:
+            if nome == name['nome']:
+                name['ponto'] -= int(ponto)
+                finalponto = name['ponto']
+
+        with open('data.json', 'w') as f: json.dump(pontos, f, indent= 4)
+
+        if int(ponto) == 1:
+
+            await ctx.channel.send(embed = retirar_singular(nome))
+            await canal_log.send(f'{hora()} - {ctx.author.name} retirou 1 ponto ao {nome}, ele tem {finalponto} agora.')
+            
         else:
 
-            if nome in pontos['Nomes']:
-
-                for i in range(len(pontos['Nomes'])):
-                    if pontos['Nomes'][i] == nome:
-                        x = i
-
-                if pontos['Pontos'][x] - int(ponto) <= 0:
-
-                    pontos['Pontos'][x] = pontos['Pontos'][x] - int(ponto)
-
-                    with open('pontos.json', 'w') as f:
-                        json.dump(pontos, f, indent= 4)
-
-                    organizar()
-
-                    if int(ponto) == 1:
-
-                        await ctx.channel.send(embed = retirar_singular(nome))
-                        print(hora() + ' - ' + ctx.author.name + ' retirou 1 ponto ao ' + nome + ', ele tem ' + str(pontos['Pontos'][x]) + ' agora.')
-                    
-                    else:
-
-                        await ctx.channel.send(embed = retirar_plural(nome, ponto))
-                        print(hora() + ' - ' + ctx.author.name + ' retirou ' + ponto + ' pontos ao ' + nome + ', ele tem ' + str(pontos['Pontos'][x]) + ' agora.')
-                        
-
-                else:
-                    await ctx.send(embed = retirar_negativo(nome))
-                    print(f'{hora()} - {ctx.author.name} tentou tirar {ponto} do {nome}, mas ele já tem 0 pontos')                 
-           
-            else:
-
-                await ctx.channel.send(embed = erro(nome))
-
-                if int(ponto) == 1:
-                    print(f'{hora()} - {ctx.author.name} tentou retirar 1 ponto ao {nome}, mas não tinha ninguém com esse nome.')
-                else:
-                    print(f'{hora()} - {ctx.author.name} tentou retirar {ponto} pontos ao {nome}, mas não tinha ninguém com esse nome.')
-
+            await ctx.channel.send(embed = retirar_plural(nome, ponto))
+            await canal_log.send(f'{hora()} - {ctx.author.name} retirou {ponto} pontos ao {nome}, ele tem {finalponto} agora.')
+            
 def setup(client):
     client.add_cog(Retirar(client))
