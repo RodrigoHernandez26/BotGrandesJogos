@@ -29,8 +29,8 @@ class Add(commands.Cog):
 
         try:
             assert int(ponto) > 0
-            limite = 11 #limite de pontos que pode ser adicionado em um comando
-            mensagem_limite = 'Para de trolar ae corno' #mensagem caso o limite seja excedido
+            limite =  #limite de pontos que pode ser adicionado em um comando
+            mensagem_limite =  #mensagem caso o limite seja excedido
             if int(ponto) > limite: 
                 msg_troll = await ctx.channel.send(mensagem_limite)
                 await asyncio.sleep(2)
