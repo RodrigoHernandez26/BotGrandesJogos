@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from utility import capitalizacao, hora, json, novo_repetido, novo_adicionado
+from utility import capitalizacao, json, novo_repetido, novo_adicionado
 
 class Novo(commands.Cog):
 
@@ -18,21 +18,20 @@ class Novo(commands.Cog):
         nome = capitalizacao(msg)
 
         if len(pontos) == 0:
-            pontos['pnts'].append({'nome': nome, 'ponto': 1}) 
+            pontos['pnts'].append({'nome': nome, 'ponto': 0}) 
         
         else:
             for name in pontos['pnts']:
                 if nome == name['nome']:
                     await ctx.channel.send(embed = novo_repetido(nome))
-                    await canal_log.send(f'{hora()} - {ctx.author.name} tentou adicionar o {nome} novamente ao jogo.')
                     return
 
-            pontos['pnts'].append({'nome': nome, 'ponto': 1})
+            pontos['pnts'].append({'nome': nome, 'ponto': 0})
 
             with open('data.json', 'w') as f: json.dump(pontos, f, indent=4)
 
             await ctx.channel.send(embed = novo_adicionado(nome))
-            await canal_log.send(f'{hora()} - {ctx.author.name} adicionou o {nome} ao jogo.')
+            await canal_log.send(f'{ctx.author.name} adicionou o {nome} ao jogo.')
 
 def setup(client):
     client.add_cog(Novo(client))

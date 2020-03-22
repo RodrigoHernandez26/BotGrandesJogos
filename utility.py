@@ -5,9 +5,6 @@ from datetime import datetime
 def capitalizacao(msg):
     return msg.lower().capitalize()
 
-def hora():
-    return datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
-
 def organizar():
 
     with open('data.json', 'r') as f:
@@ -277,25 +274,6 @@ def var_final(motivo, autor, resultado, nome, ponto):
 
 #*************************************************#
 
-def var_doisvotos(autor):
-
-    with open('data.json', 'r') as f:var = json.load(f)
-
-    for name in var['var']:
-        if name['nome'] == autor:
-            nome = name['nome']
-            voto = name['voto']
-
-    embed = discord.Embed(
-        title = f'Você já votou nesse var: {nome} --> {voto}',
-        color = 0x22a7f0 
-    )
-    embed.set_footer(text = '?help para ajuda')
-
-    return embed
-
-#*************************************************#
-
 def var_autor():
     embed = discord.Embed(
         title = 'Não foi você que iniciou essa votação!',
@@ -340,7 +318,7 @@ def help_embed():
     )
 
     embed.set_footer(text = 'Verifique como está escrito o nome da pessoa pelo comando ?pontos. Os comandos e os nomes não tem sensibilidade a capitalização.')
-    embed.add_field(name = '?novo', value = 'Adiciona uma nova pessoa ao jogo (já é adicionado 1 ponto automaticamente.).\nEx: ?novo NomeDaPessoa', inline = False)
+    embed.add_field(name = '?novo', value = 'Adiciona uma nova pessoa ao jogo.\nEx: ?novo NomeDaPessoa', inline = False)
     embed.add_field(name = '?pontos', value = 'Lista os pontos por participante.\nEx: ?pontos', inline = False)
     embed.add_field(name = '?remover', value = 'Remove uma pessoa do jogo e exclui sua pontuação.\nEx: ?remover NomeDaPessoa', inline = False)
     embed.add_field(name = '?add', value = 'Adiciona pontos a uma pessoa.\nEx: ?add pontos NomeDaPessoa', inline = False)

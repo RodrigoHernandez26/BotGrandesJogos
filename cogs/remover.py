@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from utility import capitalizacao, hora, json, remover_nome, erro
+from utility import capitalizacao, json, remover_nome, erro
 
 class Remover(commands.Cog):
 
@@ -24,7 +24,6 @@ class Remover(commands.Cog):
 
         if not verif:
             await ctx.channel.send(embed = erro(nome))
-            await canal_log.send(f'{hora() - {ctx.author.name}} tentou tirar o nome {nome} do jogo, mas não tinha ninguém com esse nome.')
             return
 
         else:
@@ -35,7 +34,7 @@ class Remover(commands.Cog):
                     pontos['pnts'].pop(cont - 1)
 
             await ctx.channel.send(embed = remover_nome(nome))
-            await canal_log.send(f'{hora()} - {ctx.author.name} retirou o {nome} do jogo.')     
+            await canal_log.send(f'{ctx.author.name} retirou o {nome} do jogo.')     
 
             with open('data.json', 'w') as f: json.dump(pontos, f, indent=4)
 

@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from utility import capitalizacao, hora, json, criar_var, var_fail, var_final, var_doisvotos, var_autor, var_cancelado, var_erro
+from utility import capitalizacao, json, criar_var, var_fail, var_final, var_autor, var_cancelado, var_erro
 
 class Var(commands.Cog):
 
@@ -22,7 +22,7 @@ class Var(commands.Cog):
         if not var_on:
 
             self.msg_bot = await ctx.send(embed = criar_var(msg, self.autor, self.nome, self.ponto))
-            await canal_log.send(f'{hora()} - {ctx.author.name} criou um var.')
+            await canal_log.send(f'{ctx.author.name} criou um var.')
 
             await self.msg_bot.add_reaction('✅')
             await self.msg_bot.add_reaction('❌')
@@ -31,7 +31,7 @@ class Var(commands.Cog):
 
         else:
             await ctx.send(embed = var_fail())
-            await canal_log.send(f'{hora()} - {self.autor} tentou criar um novo var, mas já existe uma votação em andamento.')
+            await canal_log.send(f'{self.autor} tentou criar um novo var, mas já existe uma votação em andamento.')
 
     @commands.command()
     async def cancelarvar(self, ctx):
@@ -57,15 +57,15 @@ class Var(commands.Cog):
                 with open('data.json', 'w') as f: json.dump(var, f, indent= 4)
 
                 await ctx.send(embed = var_cancelado())
-                await canal_log.send(f'{hora()} - {ctx.author.name} cancelou o var.')
+                await canal_log.send(f'{ctx.author.name} cancelou o var.')
             
             else:
                 ctx.send(embed = var_autor())
-                await canal_log.send(f'{hora()} - {ctx.author.name} tentou cancelar uma var que não era seu.')
+                await canal_log.send(f'{ctx.author.name} tentou cancelar uma var que não era seu.')
 
         else:
             await ctx.send(embed = var_erro())
-            await canal_log.send(f'{hora()} - {ctx.author.name} tentou cancelar um var que não existe.')
+            await canal_log.send(f'{ctx.author.name} tentou cancelar um var que não existe.')
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
@@ -89,7 +89,7 @@ class Var(commands.Cog):
                 with open('data.json', 'w') as f: json.dump(var, f, indent= 4)
 
                 await self.msg_bot.edit(embed = criar_var(self.msg, self.autor, self.nome, self.ponto))
-                await canal_log.send(f'{hora()} - {user.name} votou {reaction.emoji} no var.')
+                await canal_log.send(f'{user.name} votou {reaction.emoji} no var.')
                 self.num_p = reaction.count - 1
 
             elif reaction.emoji == '\u274c':
@@ -98,14 +98,8 @@ class Var(commands.Cog):
                 with open('data.json', 'w') as f: json.dump(var, f, indent= 4)
 
                 await self.msg_bot.edit(embed = criar_var(self.msg, self.autor, self.nome, self.ponto))
-                await canal_log.send(f'{hora()} - {user.name} votou {reaction.emoji} no var.')
+                await canal_log.send(f'{user.name} votou {reaction.emoji} no var.')
                 self.num_n = reaction.count - 1
-
-        else:
-            for name in var['var']:
-                if user.name == name['nome']:
-                    await self.msg_bot.channel.send(embed = var_doisvotos(user.name))
-                    await canal_log.send(f'{hora()} - {user.name} tentou votar duas vezes.')
 
         if self.num_p == 5 or self.num_n == 5:
 
@@ -126,7 +120,7 @@ class Var(commands.Cog):
                 resultado = 'Anulado!'
 
             await self.msg_bot.channel.send(embed = var_final(self.msg, self.autor, resultado, self.nome, self.ponto))
-            await canal_log.send(f'{hora()} - A votação foi encerrada, o resultado foi: {resultado}')
+            await canal_log.send(f'A votação foi encerrada, o resultado foi: {resultado}')
 
             var_on = False
 
@@ -159,7 +153,7 @@ class Var(commands.Cog):
                 if name['nome'] == user.name:
                     var['var'].pop(cont - 1)
 
-                    await canal_log.send(f'{hora()} - {user.name} retirou seu voto: {reacao}')
+                    await canal_log.send(f'{user.name} retirou seu voto: {reacao}')
 
                     with open('data.json', 'w') as f: json.dump(var, f, indent= 4)
                     

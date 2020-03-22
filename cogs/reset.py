@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from utility import hora, json, reset_true, reset_false, reset_fail
+from utility import json, reset_true, reset_false, reset_fail
 
 class Reset(commands.Cog):
 
@@ -23,17 +23,17 @@ class Reset(commands.Cog):
                 with open('data.json', 'w') as f: json.dump(pontos, f, indent= 4)
 
                 await ctx.channel.send(embed = reset_true())
-                await canal_log.send(f'{hora()} - {ctx.author.name} resetou o jogo.')
+                await canal_log.send(f'{ctx.author.name} resetou o jogo.')
 
             else:
 
                 await ctx.channel.send(embed = reset_false())
-                await canal_log.send(f'{hora()} - {ctx.author.name} tentou resetar o jogo.')
+                await canal_log.send(f'{ctx.author.name} tentou resetar o jogo.')
             
         else:
 
             await ctx.channel.send(embed = reset_fail())
-            await canal_log.send(f'{hora()} - {ctx.author.name} tentou resetar o jogo, mas não tinha ninguém participando.')
+            await canal_log.send(f'{ctx.author.name} tentou resetar o jogo, mas não tinha ninguém participando.')
 
 
 def setup(client):

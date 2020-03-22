@@ -1,7 +1,7 @@
 import discord
 import json
 from discord.ext import commands
-from utility import hora, log_add, reset_log, erro_log
+from utility import log_add, reset_log, erro_log
 
 class Log(commands.Cog):
 
@@ -21,7 +21,7 @@ class Log(commands.Cog):
         with open('data.json', 'w') as f: json.dump(log, f, indent= 4)
 
         await ctx.send(embed = log_add(ctx.channel.name))
-        print(f'{hora()} - definido o canal {ctx.channel.name} como log (id:{ctx.channel.id})')
+        print(f'Definido o canal {ctx.channel.name} como log (id:{ctx.channel.id})')
 
     @commands.command()
     async def resetlog(self, ctx):
@@ -35,12 +35,12 @@ class Log(commands.Cog):
             with open('data.json', 'w') as f: json.dump(log, f, indent= 4)
 
             await ctx.send(embed = reset_log(ctx.channel.name))
-            print(f'{hora()} - removeu o log do canal {ctx.channel.name} (id:{ctx.channel.id})')
+            print(f'Removeu o log do canal {ctx.channel.name} (id:{ctx.channel.id})')
         
         else:
             
             await ctx.send(embed = erro_log())
-            print(f'{hora()} - Erro no reset log.')
+            print(f'Erro no reset log.')
 
 def setup(client):
     client.add_cog(Log(client))
