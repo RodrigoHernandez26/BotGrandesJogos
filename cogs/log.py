@@ -30,7 +30,7 @@ class Log(commands.Cog):
 
         if ctx.channel.id == self.id and ctx.channel.name == self.canal and log['log'] != '':
 
-            log['log'] = ''
+            log['log'] = None
 
             with open('data.json', 'w') as f: json.dump(log, f, indent= 4)
 

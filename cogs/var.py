@@ -7,6 +7,15 @@ class Var(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+        var_on = False
+        self.var_on = var_on
+
+        cheat_mode = False
+        self.cheat_mode = cheat_mode
+
+        with open('data.json', 'r') as f: data = json.load(f)
+        self.data = data
+
     @commands.command()
     async def var(self, ctx, ponto, nome, *, msg):
 
@@ -15,11 +24,9 @@ class Var(commands.Cog):
         self.msg = msg
         self.autor = ctx.author.name
 
-        with open('data.json', 'r') as l: log = json.load(l)
-        canal_log = self.client.get_channel(log['log'])
+        canal_log = self.client.get_channel(self.data['log'])
 
-        global var_on
-        if not var_on:
+        if not self.var_on:
 
             self.msg_bot = await ctx.send(embed = criar_var(msg, self.autor, self.nome, self.ponto))
             await canal_log.send(f'{ctx.author.name} criou um var.')
@@ -27,7 +34,7 @@ class Var(commands.Cog):
             await self.msg_bot.add_reaction('✅')
             await self.msg_bot.add_reaction('❌')
 
-            var_on = True
+            self.var_on = True
 
         else:
             await ctx.send(embed = var_fail())
@@ -35,26 +42,22 @@ class Var(commands.Cog):
 
     @commands.command()
     async def cancelarvar(self, ctx):
-        global var_on
-        
-        with open('data.json', 'r') as f: var = json.load(f)
 
-        with open('data.json', 'r') as l: log = json.load(l)
-        canal_log = self.client.get_channel(log['log'])
+        canal_log = self.client.get_channel(self.data['log'])
 
-        if var_on:
+        if self.var_on:
             if ctx.author.name == self.autor:
 
-                var_on = False
+                self.var_on = False
 
-                var['var'].clear()
+                self.data['var'].clear()
 
                 self.msg_bot.id = None
 
                 self.num_n = 0
                 self.num_p = 0
 
-                with open('data.json', 'w') as f: json.dump(var, f, indent= 4)
+                with open('data.json', 'w') as f: json.dump(self.data, f, indent= 4)
 
                 await ctx.send(embed = var_cancelado())
                 await canal_log.send(f'{ctx.author.name} cancelou o var.')
@@ -67,99 +70,100 @@ class Var(commands.Cog):
             await ctx.send(embed = var_erro())
             await canal_log.send(f'{ctx.author.name} tentou cancelar um var que não existe.')
 
+    @commands.command()
+    async def cheat(self, ctx):   
+
+        if self.cheat_mode:
+            self.cheat_mode = False
+        else:
+            self.cheat_mode = True
+
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
-        global var_on
         self.num_p = 0
         self.num_n = 0
         erro = False
 
-        with open('data.json', 'r') as f: var = json.load(f)
+        canal_log = self.client.get_channel(self.data['log'])
 
-        with open('data.json', 'r') as l: log = json.load(l)
-        canal_log = self.client.get_channel(log['log'])
-
-        for name in var['var']:
+        for name in self.data['var']:
             if name['nome'] == user.name:
                 erro = True
         if self.msg_bot.id == reaction.message.id and not erro and user.name != self.msg_bot.author.name:
             if reaction.emoji == '\u2705':
-                var['var'].append({'nome': user.name, 'voto': reaction.emoji})
+                self.data['var'].append({'nome': user.name, 'voto': reaction.emoji})
 
-                with open('data.json', 'w') as f: json.dump(var, f, indent= 4)
+                with open('data.json', 'w') as f: json.dump(self.data, f, indent= 4)
 
                 await self.msg_bot.edit(embed = criar_var(self.msg, self.autor, self.nome, self.ponto))
                 await canal_log.send(f'{user.name} votou {reaction.emoji} no var.')
                 self.num_p = reaction.count - 1
 
             elif reaction.emoji == '\u274c':
-                var['var'].append({'nome': user.name, 'voto': reaction.emoji})
+                self.data['var'].append({'nome': user.name, 'voto': reaction.emoji})
 
-                with open('data.json', 'w') as f: json.dump(var, f, indent= 4)
+                with open('data.json', 'w') as f: json.dump(self.data, f, indent= 4)
 
                 await self.msg_bot.edit(embed = criar_var(self.msg, self.autor, self.nome, self.ponto))
                 await canal_log.send(f'{user.name} votou {reaction.emoji} no var.')
                 self.num_n = reaction.count - 1
 
-        if self.num_p == 5 or self.num_n == 5:
+        if (self.num_n == 5 or self.num_p == 5) or self.cheat_mode:
 
             await self.msg_bot.delete()
 
             if self.num_p == 5:
                 resultado = 'Confirmado!'
-                
-                with open('data.json', 'r') as p: pontos = json.load(p)
 
-                for name in pontos['pnts']:
+                for name in self.data['pnts']:
                     if self.nome == name['nome']:
+
                         name['ponto'] += int(self.ponto)
 
-                with open('pontos.json', 'w') as p: json.dump(pontos, p, indent= 4)
+                with open('data.json', 'w') as p: json.dump(self.data, p, indent= 4)
 
-            else:
+            elif self.num_n == 5:
                 resultado = 'Anulado!'
+            
+            else:
+                resultado = 'Xitado!'
 
             await self.msg_bot.channel.send(embed = var_final(self.msg, self.autor, resultado, self.nome, self.ponto))
             await canal_log.send(f'A votação foi encerrada, o resultado foi: {resultado}')
 
-            var_on = False
+            self.var_on = False
 
-            var['var'].clear()
+            self.data['var'].clear()
 
             self.msg_bot.id = None
 
             self.num_n = 0
             self.num_p = 0
 
-            with open('var.json', 'w') as f: json.dump(var, f, indent= 4)
+            with open('data.json', 'w') as f: json.dump(self.data, f, indent= 4)
 
     @commands.Cog.listener()
     async def on_reaction_remove(self, reaction, user):
 
-        with open('data.json', 'r') as f: var = json.load(f)
-
-        with open('data.json', 'r') as l: log = json.load(l)
-        canal_log = self.client.get_channel(log['log'])
+        canal_log = self.client.get_channel(self.data['log'])
         
-        for name in var['var']:
+        for name in self.data['var']:
             if user.name == name['nome']:
                 reacao = name['voto']
 
         if reaction.emoji == reacao:
 
             cont = 0
-            for name in var['var']:
+            for name in self.data['var']:
                 cont += 1
                 if name['nome'] == user.name:
-                    var['var'].pop(cont - 1)
+                    self.data['var'].pop(cont - 1)
 
                     await canal_log.send(f'{user.name} retirou seu voto: {reacao}')
 
-                    with open('data.json', 'w') as f: json.dump(var, f, indent= 4)
+                    with open('data.json', 'w') as f: json.dump(self.data, f, indent= 4)
                     
                     await self.msg_bot.edit(embed = criar_var(self.msg, self.autor, self.nome, self.ponto))
 
 def setup(client):
     client.add_cog(Var(client))
-    global var_on
-    var_on = False

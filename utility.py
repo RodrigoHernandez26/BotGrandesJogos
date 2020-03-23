@@ -264,7 +264,7 @@ def var_final(motivo, autor, resultado, nome, ponto):
     else:
         embed.add_field(name = 'Esse var vale:', value = f'{ponto} pontos para o {nome}', inline=False)
 
-    for name in var['nome']:
+    for name in var['var']:
         embed.add_field(name = name['nome'], value = name['voto'], inline = False)
 
     embed.add_field(name = '\nO resultado final é: ', value = resultado, inline= False)
