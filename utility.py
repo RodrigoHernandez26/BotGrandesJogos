@@ -23,7 +23,7 @@ def organizar():
                 name2['ponto'] = a
                 name2['nome'] = b
 
-    with open('pontos.json', 'w') as f:
+    with open('data.json', 'w') as f:
         json.dump(pontos, f, indent= 4)
 
 #**************************************************************************************************************#
@@ -42,7 +42,7 @@ def pontos_vazio():
 def pontos_lista():
     organizar()
 
-    with open('pontos.json', 'r') as f: pontos = json.load(f)
+    with open('data.json', 'r') as f: pontos = json.load(f)
 
     embed = discord.Embed(
         title = 'Os pontos são: ',
