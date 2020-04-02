@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 import asyncio
-from utility import capitalizacao, json, add_erro, add_singular, add_plural
+import yaml
+from settings.utility import capitalizacao, json, add_erro, add_singular, add_plural
 
 class Add(commands.Cog):
 
@@ -11,11 +12,13 @@ class Add(commands.Cog):
     @commands.command()
     async def add(self, ctx, ponto, nome):
 
-        with open('data.json', 'r') as f: pontos = json.load(f)
+        with open('settings/data.json', 'r') as f: data = json.load(f)
+        with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
 
-        with open('data.json', 'r') as l: log = json.load(l)
+        if ctx.channel.id != settings['CHAT_PNTS']:
+            return
 
-        canal_log = self.client.get_channel(log['log'])
+        canal_log = self.client.get_channel(settings['CHAT_LOG'])
 
         nome = capitalizacao(nome)
 
@@ -29,16 +32,14 @@ class Add(commands.Cog):
 
         try:
             assert int(ponto) > 0
-            limite =  #limite de pontos que pode ser adicionado em um comando
-            mensagem_limite =  #mensagem caso o limite seja excedido
-            if int(ponto) > limite: 
-                msg_troll = await ctx.channel.send(mensagem_limite)
+            if int(ponto) > settings['LIM_ADD']: 
+                msg_troll = await ctx.channel.send(settings['MSG_ADD'])
                 await asyncio.sleep(2)
                 await msg_troll.delete()
                 return
 
             verif = False
-            for name in pontos['pnts']:
+            for name in data['pnts']:
                 if nome == name['nome']:
                     verif = True
             
@@ -53,12 +54,12 @@ class Add(commands.Cog):
             await canal_log.send(f'{ctx.author.name} passou parametros errados.')
             return
 
-        for name in pontos['pnts']:
+        for name in data['pnts']:
             if nome == name['nome']:
                 name['ponto'] += int(ponto)
                 finalponto = name['ponto']
 
-        with open('data.json', 'w') as f: json.dump(pontos, f, indent= 4)
+        with open('settings/data.json', 'w') as f: json.dump(data, f, indent= 4)
 
         if int(ponto) == 1:
 

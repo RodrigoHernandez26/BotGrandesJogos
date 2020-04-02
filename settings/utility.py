@@ -1,14 +1,12 @@
 import discord
 import json
-from datetime import datetime
 
 def capitalizacao(msg):
     return msg.lower().capitalize()
 
 def organizar():
 
-    with open('data.json', 'r') as f:
-        pontos = json.load(f)
+    with open('settings/data.json', 'r') as f: pontos = json.load(f)
 
     for name in pontos['pnts']:
         for name2 in pontos['pnts']:
@@ -23,8 +21,7 @@ def organizar():
                 name2['ponto'] = a
                 name2['nome'] = b
 
-    with open('data.json', 'w') as f:
-        json.dump(pontos, f, indent= 4)
+    with open('settings/data.json', 'w') as f: json.dump(pontos, f, indent= 4)
 
 #**************************************************************************************************************#
 #Embeds pontos.py
@@ -42,7 +39,7 @@ def pontos_vazio():
 def pontos_lista():
     organizar()
 
-    with open('data.json', 'r') as f: pontos = json.load(f)
+    with open('settings/data.json', 'r') as f: pontos = json.load(f)
 
     embed = discord.Embed(
         title = 'Os pontos são: ',
@@ -214,7 +211,7 @@ def reset_fail():
 
 def criar_var(motivo, autor, nome, ponto):
 
-    with open('data.json', 'r') as f: var = json.load(f)
+    with open('settings/data.json', 'r') as f: var = json.load(f)
 
     embed = discord.Embed(
         title = 'Nova votação criada:',
@@ -250,7 +247,7 @@ def var_fail():
 
 def var_final(motivo, autor, resultado, nome, ponto):
 
-    with open('data.json', 'r') as f: var = json.load(f)
+    with open('settings/data.json', 'r') as f: var = json.load(f)
 
     embed = discord.Embed(
         title = 'Resultado do var:',
@@ -323,14 +320,15 @@ def help_embed():
     embed.add_field(name = '?remover', value = 'Remove uma pessoa do jogo e exclui sua pontuação.\nEx: ?remover NomeDaPessoa', inline = False)
     embed.add_field(name = '?add', value = 'Adiciona pontos a uma pessoa.\nEx: ?add pontos NomeDaPessoa', inline = False)
     embed.add_field(name = '?retirar', value = 'Retira pontos de uma pessoa.\nEx: ?retirar pontos NomeDaPessoa', inline = False)
-    embed.add_field(name = '?var', value = 'Inicia uma votação. (Necessário 5 votos para anular ou confirmar um var.)\nEx: ?var ponto nome "motivo"\nEx2: ?var 99 Megamente falou 99 vezes que o modolo é gay', inline = False)
+    embed.add_field(name = '?var', value = 'Inicia uma votação. (Necessário 5 votos para anular ou confirmar um var.)\nEx: ?var ponto nome "motivo"\nEx2: ?var 99 Megamente quebrou 99 vezes as regras', inline = False)
     embed.add_field(name = '?cancelarvar', value = 'Cancela o var que você criou. (Somente a pessoa que iniciou o var pode cancela-lo).\nEx: ?cancelarvar', inline = False)
     embed.add_field(name = '?ping', value = 'Visualiza a latência do Bot.\nEx: ?ping', inline= False)
+    embed.add_field(name = 'Rolar Dados: ', value = 'dX - Rola 1 dado de X lado(s)\nEx: d10\n\nYdX - Rola Y dados de X lado(s)\nEX: 3d10\n\nZ#YdX Rola Z vezes Y dados de X lado(s)\nEx: 5#3d10', inline= False)
 
     return embed
 
 #**************************************************************************************************************#
-#Embed log
+#Embed settings
 
 def log_add(nome):
     embed = discord.Embed(
@@ -356,6 +354,17 @@ def erro_log():
 
     embed = discord.Embed(
         title = 'Esse não é um canal de log!',
+        color = 0x22a7f0
+    )
+
+    return embed
+
+#*************************************************#
+
+def pontos_add(nome):
+
+    embed = discord.Embed(
+        title = f'O canal {nome} foi definido como o chat dos pontos!',
         color = 0x22a7f0
     )
 

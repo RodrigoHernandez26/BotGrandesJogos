@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
-from utility import capitalizacao, json, retirar_erro, retirar_singular, retirar_plural
+import yaml
+from settings.utility import capitalizacao, json, retirar_erro, retirar_singular, retirar_plural
 
 class Retirar(commands.Cog):
 
@@ -10,10 +11,13 @@ class Retirar(commands.Cog):
     @commands.command()
     async def retirar(self, ctx, ponto, nome):
 
-        with open('data.json', 'r') as f: pontos = json.load(f)
+        with open('settings/data.json', 'r') as f: data = json.load(f)
+        with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
 
-        with open('data.json', 'r') as l: log = json.load(l)
-        canal_log = self.client.get_channel(log['log'])
+        if ctx.channel.id != settings['CHAT_PNTS']:
+            return
+
+        canal_log = self.client.get_channel(settings['CHAT_LOG'])
 
         nome = capitalizacao(nome)
 
@@ -29,7 +33,7 @@ class Retirar(commands.Cog):
             assert int(ponto) > 0
 
             verif = False
-            for name in pontos['pnts']:
+            for name in data['pnts']:
                 if nome == name['nome']:
                     verif = True
                     assert name['ponto'] - int(ponto) >= 0
@@ -43,12 +47,12 @@ class Retirar(commands.Cog):
             await ctx.channel.send(embed = retirar_erro(nome, ponto))
             return
 
-        for name in pontos['pnts']:
+        for name in data['pnts']:
             if nome == name['nome']:
                 name['ponto'] -= int(ponto)
                 finalponto = name['ponto']
 
-        with open('data.json', 'w') as f: json.dump(pontos, f, indent= 4)
+        with open('settings/data.json', 'w') as f: json.dump(data, f, indent= 4)
 
         if int(ponto) == 1:
 

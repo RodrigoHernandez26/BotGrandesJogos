@@ -1,0 +1,22 @@
+#Preencha todos os campos antes de executar o main.py
+#Em utility.py tem todas as mensagens que o bot envia
+
+TOKEN_BOT: '' #Token do seu bot https://discordapp.com/developers/applications
+
+CHAT_LOG: 0 #ID do chat onde será enviado as mensagens de log
+
+CHAT_RPG: 0 #ID do chat onde será lido e enviado as mensagens do RPG
+
+CHAT_PNTS: 0 #ID do chat onde será lido e enviado as mensagens dos pontos
+
+API_KEY: "" #Request post do https://api.random.org / Leia as anotações de cogs/dado.py 
+
+LIM_ADD: 0 #Limite de pontos que podem ser adionados em 1 comando
+
+MSG_ADD: "" #Mensagem que será enviada caso alguem tente adicionar mais que o limite
+
+LIM_MULT: 0 #Limite do multiplicador de dados
+
+LIM_QNT: 0 #Limite da quantidade de dados
+
+LIM_DADO: 0 #Limite do número de lados do dado

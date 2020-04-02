@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
-from utility import json, reset_true, reset_false, reset_fail
+import yaml
+from settings.utility import json, reset_true, reset_false, reset_fail
 
 class Reset(commands.Cog):
 
@@ -10,17 +11,20 @@ class Reset(commands.Cog):
     @commands.command()
     async def reset(self, ctx):
 
-        with open('data.json', 'r') as f: pontos = json.load(f)
+        with open('settings/data.json', 'r') as f: data = json.load(f)
+        with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
 
-        with open('data.json', 'r') as l: log = json.load(l)
-        canal_log = self.client.get_channel(log['log'])
+        if ctx.channel.id != settings['CHAT_PNTS']:
+            return
 
-        if len(pontos['pnts']) != 0:
+        canal_log = self.client.get_channel(settings['CHAT_LOG'])
+
+        if len(data['pnts']) != 0:
             if ctx.author.id == 232142342591741952:
                 
-                pontos['pnts'].clear()
+                data['pnts'].clear()
 
-                with open('data.json', 'w') as f: json.dump(pontos, f, indent= 4)
+                with open('settings/data.json', 'w') as f: json.dump(data, f, indent= 4)
 
                 await ctx.channel.send(embed = reset_true())
                 await canal_log.send(f'{ctx.author.name} resetou o jogo.')
