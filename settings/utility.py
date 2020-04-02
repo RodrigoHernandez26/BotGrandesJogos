@@ -207,7 +207,7 @@ def reset_fail():
     return embed
 
 #**************************************************************************************************************#
-#Embeds var
+#Embeds var.py
 
 def criar_var(motivo, autor, nome, ponto):
 
@@ -324,49 +324,6 @@ def help_embed():
     embed.add_field(name = '?cancelarvar', value = 'Cancela o var que você criou. (Somente a pessoa que iniciou o var pode cancela-lo).\nEx: ?cancelarvar', inline = False)
     embed.add_field(name = '?ping', value = 'Visualiza a latência do Bot.\nEx: ?ping', inline= False)
     embed.add_field(name = 'Rolar Dados: ', value = 'dX - Rola 1 dado de X lado(s)\nEx: d10\n\nYdX - Rola Y dados de X lado(s)\nEX: 3d10\n\nZ#YdX Rola Z vezes Y dados de X lado(s)\nEx: 5#3d10', inline= False)
-
-    return embed
-
-#**************************************************************************************************************#
-#Embed settings
-
-def log_add(nome):
-    embed = discord.Embed(
-        title = f'O canal {nome} foi definido como o log do BotPontos!',
-        color = 0x22a7f0
-    )
-
-    return embed
-
-#*************************************************#
-
-def reset_log(nome):
-    embed = discord.Embed(
-        title = f'O canal {nome} não é mais o log do BotPontos.',
-        color = 0x22a7f0
-    )
-
-    return embed
-
-#*************************************************#
-
-def erro_log():
-
-    embed = discord.Embed(
-        title = 'Esse não é um canal de log!',
-        color = 0x22a7f0
-    )
-
-    return embed
-
-#*************************************************#
-
-def pontos_add(nome):
-
-    embed = discord.Embed(
-        title = f'O canal {nome} foi definido como o chat dos pontos!',
-        color = 0x22a7f0
-    )
 
     return embed
 
