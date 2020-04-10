@@ -1,27 +1,6 @@
 import discord
 import json
-
-def capitalizacao(msg):
-    return msg.lower().capitalize()
-
-def organizar():
-
-    with open('settings/data.json', 'r') as f: pontos = json.load(f)
-
-    for name in pontos['pnts']:
-        for name2 in pontos['pnts']:
-            if name['ponto'] > name2['ponto']:
-
-                a = name['ponto']
-                b = name['nome']
-
-                name['ponto'] = name2['ponto']
-                name['nome'] = name2['nome']
-
-                name2['ponto'] = a
-                name2['nome'] = b
-
-    with open('settings/data.json', 'w') as f: json.dump(pontos, f, indent= 4)
+from settings.db_commands import mysql_command
 
 #**************************************************************************************************************#
 #Embeds pontos.py
@@ -37,9 +16,8 @@ def pontos_vazio():
     
 #*************************************************#
 def pontos_lista():
-    organizar()
-
-    with open('settings/data.json', 'r') as f: pontos = json.load(f)
+    
+    data = mysql_command("select nome, pontos from pnts order by pontos desc", True)
 
     embed = discord.Embed(
         title = 'Os pontos são: ',
@@ -48,19 +26,19 @@ def pontos_lista():
     embed.set_footer(text= '?help para ajuda')
 
     cont = 0
-    for nomes in pontos['pnts']:
+    for i in range(len(data)):
 
         if cont == 0:
-            embed.add_field(name = nomes['nome'] + '🥇', value = str(nomes['ponto']), inline = True)
+            embed.add_field(name = data[i]['nome'] + '🥇', value = str(data[i]['pontos']), inline = True)
         
         elif cont == 1:
-            embed.add_field(name = nomes['nome'] + '🥈', value = str(nomes['ponto']), inline = True)
+            embed.add_field(name = data[i]['nome'] + '🥈', value = str(data[i]['pontos']), inline = True)
 
         elif cont == 2:
-            embed.add_field(name = nomes['nome'] + '🥉', value = str(nomes['ponto']), inline = True)
+            embed.add_field(name = data[i]['nome'] + '🥉', value = str(data[i]['pontos']), inline = True)
 
         else:
-            embed.add_field(name = nomes['nome'], value = str(nomes['ponto']), inline = True)
+            embed.add_field(name = data[i]['nome'], value = str(data[i]['pontos']), inline = True)
         cont += 1  
 
     return embed
@@ -209,24 +187,22 @@ def reset_fail():
 #**************************************************************************************************************#
 #Embeds var.py
 
-def criar_var(motivo, autor, nome, ponto):
-
-    with open('settings/data.json', 'r') as f: var = json.load(f)
+def criar_var(votacao):
 
     embed = discord.Embed(
         title = 'Nova votação criada:',
         color = 0x22a7f0
     )
     embed.set_footer(text = '?help para ajuda')
-    embed.add_field(name = autor + ' criou a votação', value = motivo, inline=False)
+    embed.add_field(name = votacao.autor + ' criou a votação', value = votacao.motivo, inline=False)
 
-    if ponto == 1:
-        embed.add_field(name = 'Esse var vale:', value = f'{ponto} ponto para o {nome}', inline=False)
+    if votacao.ponto == 1:
+        embed.add_field(name = 'Esse var vale:', value = f'{votacao.ponto} ponto para o {votacao.alvo}', inline=False)
     else:
-        embed.add_field(name = 'Esse var vale:', value = f'{ponto} pontos para o {nome}', inline=False)
+        embed.add_field(name = 'Esse var vale:', value = f'{votacao.ponto} pontos para o {votacao.alvo}', inline=False)
 
-    for name in var['var']:
-        embed.add_field(name = name['nome'], value = name['voto'], inline= False)
+    for name in votacao.voto['votos']:
+        embed.add_field(name = name['user'], value = name['voto'], inline= False)
 
     embed.set_image(url = 'https://media.tenor.com/images/8d649d1b182b5dc7c0befe0682c5c3cb/tenor.gif')
 
@@ -236,7 +212,7 @@ def criar_var(motivo, autor, nome, ponto):
 
 def var_fail():
     embed = discord.Embed(
-        title = 'Já existe uma votação em andamento!',
+        title = 'Verifique se já existe uma votação ou se todos os argumentos do comando estão corretos.',
         color = 0x22a7f0
     )
     embed.set_footer(text = '?help para ajuda')
@@ -245,24 +221,22 @@ def var_fail():
 
 #*************************************************#
 
-def var_final(motivo, autor, resultado, nome, ponto):
-
-    with open('settings/data.json', 'r') as f: var = json.load(f)
+def var_final(votacao, resultado):
 
     embed = discord.Embed(
         title = 'Resultado do var:',
         color = 0x22a7f0                   
     )
     embed.set_footer(text = '?help para ajuda')
-    embed.add_field(name = autor + ' criou a votação', value = motivo, inline=False)
+    embed.add_field(name = votacao.autor + ' criou a votação', value = votacao.motivo, inline=False)
 
-    if ponto == 1:
-        embed.add_field(name = 'Esse var vale:', value = f'{ponto} ponto para o {nome}', inline=False)
+    if votacao.ponto == 1:
+        embed.add_field(name = 'Esse var vale:', value = f'{votacao.ponto} ponto para o {votacao.alvo}', inline=False)
     else:
-        embed.add_field(name = 'Esse var vale:', value = f'{ponto} pontos para o {nome}', inline=False)
+        embed.add_field(name = 'Esse var vale:', value = f'{votacao.ponto} pontos para o {votacao.alvo}', inline=False)
 
-    for name in var['var']:
-        embed.add_field(name = name['nome'], value = name['voto'], inline = False)
+    for name in votacao.voto['votos']:
+        embed.add_field(name = name['user'], value = name['voto'], inline = False)
 
     embed.add_field(name = '\nO resultado final é: ', value = resultado, inline= False)
     embed.set_image(url = 'https://media.tenor.com/images/bc8e6e9ec05bc9ca408e94297a5c07e4/tenor.gif')

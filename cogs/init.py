@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from datetime import datetime
+from settings.db_commands import connect
 
 class Init(commands.Cog):
 
@@ -9,9 +10,12 @@ class Init(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        print(datetime.now().strftime('%d/%m/%Y - %H:%M:%S\n'))
+
+        connect()
+        
         await self.client.change_presence(status=discord.Status.online, activity=discord.Game("?help para ajuda"))
-        print(datetime.now().strftime('%d/%m/%Y - %H:%M:%S'))
-        print('** BOT ONLINE **')
+        print('[*] Bot online')
 
 def setup(client):
     client.add_cog(Init(client))

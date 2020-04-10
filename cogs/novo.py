@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 import yaml
-from settings.utility import capitalizacao, json, novo_repetido, novo_adicionado
+from settings.embeds import novo_repetido, novo_adicionado
+from settings.db_commands import mysql_command
 
 class Novo(commands.Cog):
 
@@ -11,31 +12,30 @@ class Novo(commands.Cog):
     @commands.command()
     async def novo(self, ctx, msg):
 
-        with open('settings/data.json', 'r') as f: data = json.load(f)
         with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
 
         if ctx.channel.id != settings['CHAT_PNTS']:
             return
 
         canal_log = self.client.get_channel(settings['CHAT_LOG'])
-  
-        nome = capitalizacao(msg)
+
+        nome = msg.lower().capitalize()
+
+        data = mysql_command('select nome from pnts', True)
 
         if len(data) == 0:
-            data['pnts'].append({'nome': nome, 'ponto': 0}) 
-        
+            mysql_command(f'insert into pnts (nome) value ("{nome}")')
+
         else:
-            for name in data['pnts']:
-                if nome == name['nome']:
+            for i in range(len(data)):
+                if data[i]['nome'] == nome:
                     await ctx.channel.send(embed = novo_repetido(nome))
                     return
 
-            data['pnts'].append({'nome': nome, 'ponto': 0})
+            mysql_command(f'insert into pnts (nome) value ("{nome}")')
 
-            with open('settings/data.json', 'w') as f: json.dump(data, f, indent=4)
-
-            await ctx.channel.send(embed = novo_adicionado(nome))
-            await canal_log.send(f'{ctx.author.name} adicionou o {nome} ao jogo.')
+        await ctx.channel.send(embed = novo_adicionado(nome))
+        await canal_log.send(f'{ctx.author.name} adicionou o {nome} ao jogo.')
 
 def setup(client):
     client.add_cog(Novo(client))

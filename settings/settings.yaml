@@ -9,7 +9,7 @@ CHAT_RPG: 0 #ID do chat onde será lido e enviado as mensagens do RPG
 
 CHAT_PNTS: 0 #ID do chat onde será lido e enviado as mensagens dos pontos
 
-API_KEY: "" #Request post do https://api.random.org / Leia as anotações de cogs/dado.py 
+API_KEY: "" #Request post do https://api.random.org
 
 LIM_ADD: 0 #Limite de pontos que podem ser adionados em 1 comando
 
@@ -20,3 +20,10 @@ LIM_MULT: 0 #Limite do multiplicador de dados
 LIM_QNT: 0 #Limite da quantidade de dados
 
 LIM_DADO: 0 #Limite do número de lados do dado
+
+#CONNECT DB
+HOST: ""
+USER: ""
+PASSWORD: ""
+DB: ""
+PORT: 0

@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 import yaml
-from settings.utility import capitalizacao, json, remover_nome, erro
+from settings.embeds import remover_nome, erro
+from settings.db_commands import mysql_command
 
 class Remover(commands.Cog):
 
@@ -10,8 +11,7 @@ class Remover(commands.Cog):
 
     @commands.command()
     async def remover(self, ctx, msg):
-        
-        with open('settings/data.json', 'r') as f: data = json.load(f)
+
         with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
 
         if ctx.channel.id != settings['CHAT_PNTS']:
@@ -19,28 +19,19 @@ class Remover(commands.Cog):
 
         canal_log = self.client.get_channel(settings['CHAT_LOG'])
 
-        nome = capitalizacao(msg)
+        nome = msg.lower().capitalize()
 
-        verif = False
-        for name in data['pnts']:
-            if nome == name['nome']:
-                verif = True
+        data = mysql_command("select * from pnts", True)
 
-        if not verif:
-            await ctx.channel.send(embed = erro(nome))
-            return
+        for i in range(len(data)):
+            if data[i]['nome'] == nome:
+                mysql_command(f"delete from pnts where id_pontos = {data[i]['id_pontos']}")
 
-        else:
-            cont = 0
-            for name in data['pnts']:
-                cont += 1
-                if name['nome'] == nome:
-                    data['pnts'].pop(cont - 1)
-
-            await ctx.channel.send(embed = remover_nome(nome))
-            await canal_log.send(f'{ctx.author.name} retirou o {nome} do jogo.')     
-
-            with open('settings/data.json', 'w') as f: json.dump(data, f, indent=4)
+                await ctx.channel.send(embed = remover_nome(nome))
+                await canal_log.send(f'{ctx.author.name} retirou o {nome} do jogo.')
+                return
+        
+        await ctx.channel.send(embed = erro(nome))
 
 def setup(client):
     client.add_cog(Remover(client))

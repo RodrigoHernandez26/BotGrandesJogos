@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 import yaml
-from settings.utility import capitalizacao, json, retirar_erro, retirar_singular, retirar_plural
+from settings.embeds import retirar_erro, retirar_singular, retirar_plural, erro
+from settings.db_commands import mysql_command
 
 class Retirar(commands.Cog):
 
@@ -11,7 +12,14 @@ class Retirar(commands.Cog):
     @commands.command()
     async def retirar(self, ctx, ponto, nome):
 
-        with open('settings/data.json', 'r') as f: data = json.load(f)
+        try:
+            int(ponto)
+            assert int(ponto) > 0
+        
+        except Exception:
+            await ctx.channel.send(embed = retirar_erro(nome, ponto))
+            return
+
         with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
 
         if ctx.channel.id != settings['CHAT_PNTS']:
@@ -19,50 +27,35 @@ class Retirar(commands.Cog):
 
         canal_log = self.client.get_channel(settings['CHAT_LOG'])
 
-        nome = capitalizacao(nome)
+        nome = nome.lower().capitalize()
 
-        try:
-            int(ponto)
-
-        except ValueError:
-            await ctx.channel.send(embed = retirar_erro(nome, ponto))
-            return  
+        data = mysql_command("select * from pnts", True)
         
-        try:
+        for i in range(len(data)):
+            if data[i]['nome'] == nome:
 
-            assert int(ponto) > 0
+                if int(data[i]['pontos']) - int(ponto) >= 0:
 
-            verif = False
-            for name in data['pnts']:
-                if nome == name['nome']:
-                    verif = True
-                    assert name['ponto'] - int(ponto) >= 0
-            
-            if not verif:
-                await ctx.channel.send(embed = retirar_erro(nome, ponto))
-                return
+                    finalponto = int(data[i]['pontos']) - int(ponto)
+                    mysql_command(f"update pnts set pontos = {finalponto} where id_pontos = {data[i]['id_pontos']}")
 
-        except AssertionError:
+                    if int(ponto) == 1:
 
-            await ctx.channel.send(embed = retirar_erro(nome, ponto))
-            return
+                        await ctx.channel.send(embed = retirar_singular(nome))
+                        await canal_log.send(f'{ctx.author.name} retirou 1 ponto ao {nome}, ele tem {finalponto} agora.')
+                        return
+                        
+                    else:
 
-        for name in data['pnts']:
-            if nome == name['nome']:
-                name['ponto'] -= int(ponto)
-                finalponto = name['ponto']
+                        await ctx.channel.send(embed = retirar_plural(nome, ponto))
+                        await canal_log.send(f'{ctx.author.name} retirou {ponto} pontos ao {nome}, ele tem {finalponto} agora.')
+                        return
 
-        with open('settings/data.json', 'w') as f: json.dump(data, f, indent= 4)
-
-        if int(ponto) == 1:
-
-            await ctx.channel.send(embed = retirar_singular(nome))
-            await canal_log.send(f'{ctx.author.name} retirou 1 ponto ao {nome}, ele tem {finalponto} agora.')
-            
-        else:
-
-            await ctx.channel.send(embed = retirar_plural(nome, ponto))
-            await canal_log.send(f'{ctx.author.name} retirou {ponto} pontos ao {nome}, ele tem {finalponto} agora.')
-            
+                else:
+                    await ctx.channel.send(embed = retirar_erro(nome, ponto))
+                    return
+        
+        await ctx.channel.send(embed = erro(nome))
+   
 def setup(client):
     client.add_cog(Retirar(client))

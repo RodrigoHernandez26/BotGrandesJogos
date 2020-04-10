@@ -1,19 +1,55 @@
 import discord
 from discord.ext import commands
 import yaml
-from settings.utility import capitalizacao, json, criar_var, var_fail, var_final, var_autor, var_cancelado, var_erro
+from settings.embeds import json, criar_var, var_fail, var_final, var_autor, var_cancelado, var_erro
+from settings.db_commands import mysql_command
+
+class NewVar():
+
+    def __init__(self, autor, motivo, ponto, alvo, voto):
+        self.autor = autor
+        self.motivo = motivo
+        self.ponto = ponto
+        self.alvo = alvo
+        self.voto = voto
+        NewVar.voto = voto
+
+    async def add_voto(user, voto):
+
+        if voto == '\u2705':
+            NewVar.voto['votos'].append({'user': user, 'voto': '\u2705'})
+            NewVar.voto['votop'] += 1
+
+            await Var.msg.edit(embed = criar_var(Var.votacao))
+            
+        elif voto == '\u274c':
+            NewVar.voto['votos'].append({'user': user, 'voto': '\u274c'})
+            NewVar.voto['voton'] += 1
+
+            await Var.msg.edit(embed = criar_var(Var.votacao))
+
+    async def retira_voto(user, voto):
+
+        cont = 0
+        for name in NewVar.voto['votos']:
+            if name['user'] == user and voto == name['voto']:
+
+                NewVar.voto['votos'].pop(cont)
+
+                if voto == '\u2705':
+                    NewVar.voto['votop'] -= 1
+                elif voto == '\u274c':
+                    NewVar.voto['voton'] -= 1
+
+                await Var.msg.edit(embed = criar_var(Var.votacao))
+
+            cont += 1
 
 class Var(commands.Cog):
 
     def __init__(self, client):
         self.client = client
 
-        var_on = False
-        self.var_on = var_on
-
-        cheat_mode = False
-        self.cheat_mode = cheat_mode
-        
     @commands.command()
     async def var(self, ctx, ponto, nome, *, msg):
 
@@ -21,165 +57,109 @@ class Var(commands.Cog):
 
         if ctx.channel.id != settings['CHAT_PNTS']:
             return
-        
+
         canal_log = self.client.get_channel(settings['CHAT_LOG'])
         self.canal_log = canal_log
 
-        self.nome = capitalizacao(nome)
-        self.ponto = int(ponto)
-        self.msg = msg
-        self.autor = ctx.author.name
+        try:
+            nome = nome.lower().capitalize()
+            assert self.msg_bot != None
+            await ctx.channel.send(embed = var_fail())
+            await self.canal_log.send(f'{ctx.author.name} tentou criar um novo var, mas já existe uma votação em andamento.')
+            return
 
-        if not self.var_on:
+        except Exception:
+            Var.votacao = NewVar(ctx.author.name, msg, ponto, nome, {"votos":[],"votop": 0,"voton": 0})
+            self.votacao = Var.votacao
+            self.ponto = int(ponto)
 
-            self.msg_bot = await ctx.send(embed = criar_var(msg, self.autor, self.nome, self.ponto))
-            await self.canal_log.send(f'{ctx.author.name} criou um var.')
+        self.data = mysql_command(f"select * from pnts", True)
 
-            await self.msg_bot.add_reaction('✅')
-            await self.msg_bot.add_reaction('❌')
+        verif = False
+        for i in range(len(self.data)):
+           if self.data[i]['nome'] == nome:
+               self.id = self.data[i]['id_pontos']
+               self.ponto_atual = self.data[i]['pontos']
+               verif = True
+               break
 
-            self.var_on = True
-
-        else:
-            await ctx.send(embed = var_fail())
-            await self.canal_log.send(f'{self.autor} tentou criar um novo var, mas já existe uma votação em andamento.')
+        if not verif:
+            return  
+       
+        self.msg_bot = await ctx.channel.send(embed = criar_var(self.votacao))
+        Var.msg = self.msg_bot
+        await self.msg_bot.add_reaction('✅')
+        await self.msg_bot.add_reaction('❌')
+        await self.canal_log.send(f'{ctx.author.name} criou um var.')
 
     @commands.command()
     async def cancelarvar(self, ctx):
 
-        with open('settings/data.json', 'r') as f: data = json.load(f)
         with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
 
         if ctx.channel.id != settings['CHAT_PNTS']:
             return
 
-        self.canal_log = self.client.get_channel(settings['CHAT_LOG'])
+        try:
+            assert ctx.author.name == self.votacao.autor
 
-        if self.var_on:
-            if ctx.author.name == self.autor:
+            self.msg_bot = None
+            self.votacao = None
+            await ctx.channel.send(embed = var_cancelado())
 
-                self.var_on = False
+        except NameError:
+            await ctx.channel.send(embed = var_erro())
 
-                data['var'].clear()
+        except AssertionError:
+            await ctx.channel.send(embed = var_autor())
 
-                self.msg_bot.id = None
+    async def verifica(self, voto):
 
-                self.num_n = 0
-                self.num_p = 0
+        if voto['votop'] >= 5 or voto['voton'] >= 5:
 
-                with open('settings/data.json', 'w') as f: json.dump(data, f, indent= 4)
+            await self.msg_bot.delete()
+        
+            if voto['votop'] >= 5:
+                resultado = 'Confirmado!'
 
-                await ctx.send(embed = var_cancelado())
-                await self.canal_log.send(f'{ctx.author.name} cancelou o var.')
-            
-            else:
-                ctx.send(embed = var_autor())
-                await self.canal_log.send(f'{ctx.author.name} tentou cancelar uma var que não era seu.')
+                mysql_command(f"update pnts set pontos = {self.ponto + self.ponto_atual} where id_pontos = {self.id}")
 
-        else:
-            await ctx.send(embed = var_erro())
-            await self.canal_log.send(f'{ctx.author.name} tentou cancelar um var que não existe.')
+            elif voto['voton'] >= 5:
+                resultado = 'Anulado!'
 
-    @commands.command()
-    async def cheat(self, ctx):
-
-        with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
-
-        if ctx.channel.id != settings['CHAT_PNTS']:
-            return
-
-        if self.cheat_mode:
-            self.cheat_mode = False
-        else:
-            self.cheat_mode = True
+            await self.msg_bot.channel.send(embed = var_final(self.votacao, resultado))
+            self.votacao = None
+            self.msg_bot = None 
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
 
-        with open('settings/data.json', 'r') as f: data = json.load(f)
-        
-        self.num_p = 0
-        self.num_n = 0
-        erro = False
+        try:
+            assert user.name != self.msg_bot.author.name
+            assert self.msg_bot != None
+        except:
+            return
 
-        for name in data['var']:
-            if name['nome'] == user.name:
-                erro = True
-        if self.msg_bot.id == reaction.message.id and not erro and user.name != self.msg_bot.author.name:
-            if reaction.emoji == '\u2705':
-                data['var'].append({'nome': user.name, 'voto': reaction.emoji})
+        for name in NewVar.voto['votos']:
+            if name['user'] == user.name:
+                return
 
-                with open('settings/data.json', 'w') as f: json.dump(data, f, indent= 4)
-
-                await self.msg_bot.edit(embed = criar_var(self.msg, self.autor, self.nome, self.ponto))
-                await self.canal_log.send(f'{user.name} votou {reaction.emoji} no var.')
-                self.num_p = reaction.count - 1
-
-            elif reaction.emoji == '\u274c':
-                data['var'].append({'nome': user.name, 'voto': reaction.emoji})
-
-                with open('settings/data.json', 'w') as f: json.dump(data, f, indent= 4)
-
-                await self.msg_bot.edit(embed = criar_var(self.msg, self.autor, self.nome, self.ponto))
-                await self.canal_log.send(f'{user.name} votou {reaction.emoji} no var.')
-                self.num_n = reaction.count - 1
-
-        if (self.num_n == 5 or self.num_p == 5) or self.cheat_mode:
-
-            await self.msg_bot.delete()
-
-            if self.num_p == 5:
-                resultado = 'Confirmado!'
-
-                for name in data['pnts']:
-                    if self.nome == name['nome']:
-
-                        name['ponto'] += int(self.ponto)
-
-                with open('settings/data.json', 'w') as p: json.dump(data, p, indent= 4)
-
-            elif self.num_n == 5:
-                resultado = 'Anulado!'
-            
-            else:
-                resultado = 'Xitado!'
-
-            await self.msg_bot.channel.send(embed = var_final(self.msg, self.autor, resultado, self.nome, self.ponto))
-            await self.canal_log.send(f'A votação foi encerrada, o resultado foi: {resultado}')
-
-            self.var_on = False
-
-            data['var'].clear()
-
-            self.msg_bot.id = None
-
-            self.num_n = 0
-            self.num_p = 0
-
-            with open('settings/data.json', 'w') as f: json.dump(data, f, indent= 4)
+        await NewVar.add_voto(user.name, reaction.emoji)
+        await Var.verifica(self, NewVar.voto)
 
     @commands.Cog.listener()
     async def on_reaction_remove(self, reaction, user):
 
-        with open('settings/data.json', 'r') as f: data = json.load(f)
-        
-        for name in data['var']:
-            if user.name == name['nome']:
-                reacao = name['voto']
+        try:
+            assert self.msg_bot != None
+        except:
+            return
 
-        if reaction.emoji == reacao:
-
-            cont = 0
-            for name in data['var']:
-                cont += 1
-                if name['nome'] == user.name:
-                    data['var'].pop(cont - 1)
-
-                    await self.canal_log.send(f'{user.name} retirou seu voto: {reacao}')
-
-                    with open('settings/data.json', 'w') as f: json.dump(data, f, indent= 4)
-                    
-                    await self.msg_bot.edit(embed = criar_var(self.msg, self.autor, self.nome, self.ponto))
+        for name in NewVar.voto['votos']:
+            if name['user'] == user.name and name['voto'] == reaction.emoji:
+                
+                await NewVar.retira_voto(user.name, reaction.emoji)
+                await Var.verifica(self, NewVar.voto)
 
 def setup(client):
     client.add_cog(Var(client))

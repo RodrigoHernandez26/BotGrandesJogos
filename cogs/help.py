@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import yaml
-from settings.utility import help_embed
+from settings.embeds import help_embed
 
 class Help(commands.Cog):
 
