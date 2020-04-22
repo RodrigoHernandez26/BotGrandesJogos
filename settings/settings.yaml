@@ -1,5 +1,5 @@
 #Preencha todos os campos antes de executar o main.py
-#Em utility.py tem todas as mensagens que o bot envia
+#Em embeds.py tem todas as mensagens que o bot envia
 
 TOKEN_BOT: '' #Token do seu bot https://discordapp.com/developers/applications
 
@@ -14,6 +14,8 @@ API_KEY: "" #Request post do https://api.random.org
 LIM_ADD: 0 #Limite de pontos que podem ser adionados em 1 comando
 
 MSG_ADD: "" #Mensagem que será enviada caso alguem tente adicionar mais que o limite
+
+ID_RESET: 0 #ID do único usuário que pode resetar o jogo (user o comando ?reset)
 
 LIM_MULT: 0 #Limite do multiplicador de dados
 

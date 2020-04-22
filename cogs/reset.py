@@ -22,7 +22,7 @@ class Reset(commands.Cog):
         data = mysql_command("select * from pnts", True)
 
         if len(data) != 0:
-            if ctx.author.id == 232142342591741952:
+            if ctx.author.id == settings['ID_RESET']:
                 
                 mysql_command("delete from pnts")
 

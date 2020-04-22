@@ -29,31 +29,30 @@ class Retirar(commands.Cog):
 
         nome = nome.lower().capitalize()
 
-        data = mysql_command("select * from pnts", True)
-        
-        for i in range(len(data)):
-            if data[i]['nome'] == nome:
+        data = mysql_command(f"select * from pnts where nome = '{nome}'", True)
 
-                if int(data[i]['pontos']) - int(ponto) >= 0:
+        if len(data) != 0:
 
-                    finalponto = int(data[i]['pontos']) - int(ponto)
-                    mysql_command(f"update pnts set pontos = {finalponto} where id_pontos = {data[i]['id_pontos']}")
+            if int(data[0]['pontos']) - int(ponto) >= 0:
 
-                    if int(ponto) == 1:
+                finalponto = int(data[0]['pontos']) - int(ponto)
+                mysql_command(f"update pnts set pontos = {finalponto} where id_pontos = {data[0]['id_pontos']}")
 
-                        await ctx.channel.send(embed = retirar_singular(nome))
-                        await canal_log.send(f'{ctx.author.name} retirou 1 ponto ao {nome}, ele tem {finalponto} agora.')
-                        return
-                        
-                    else:
+                if int(ponto) == 1:
 
-                        await ctx.channel.send(embed = retirar_plural(nome, ponto))
-                        await canal_log.send(f'{ctx.author.name} retirou {ponto} pontos ao {nome}, ele tem {finalponto} agora.')
-                        return
-
-                else:
-                    await ctx.channel.send(embed = retirar_erro(nome, ponto))
+                    await ctx.channel.send(embed = retirar_singular(nome))
+                    await canal_log.send(f'{ctx.author.name} retirou 1 ponto ao {nome}, ele tem {finalponto} agora.')
                     return
+                    
+                else:
+
+                    await ctx.channel.send(embed = retirar_plural(nome, ponto))
+                    await canal_log.send(f'{ctx.author.name} retirou {ponto} pontos ao {nome}, ele tem {finalponto} agora.')
+                    return
+
+            else:
+                await ctx.channel.send(embed = retirar_erro(nome, ponto))
+                return
         
         await ctx.channel.send(embed = erro(nome))
    

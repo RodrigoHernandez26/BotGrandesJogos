@@ -37,23 +37,20 @@ class Add(commands.Cog):
             await ctx.channel.send(embed = add_erro(nome, ponto))
             return
 
-        data = mysql_command("select * from pnts", True)
+        data = mysql_command(f"select * from pnts where nome = '{nome}'", True)
+        
+        finalponto = int(data[0]['pontos']) + int(ponto)
+        mysql_command(f"update pnts set pontos = {finalponto} where id_pontos = {data[0]['id_pontos']}")
 
-        for i in range(len(data)):
-            if data[i]['nome'] == nome:
-
-                finalponto = int(data[i]['pontos']) + int(ponto)
-                mysql_command(f"update pnts set pontos = {finalponto} where id_pontos = {data[i]['id_pontos']}")
-
-                if int(ponto) == 1:
-                    await ctx.channel.send(embed = add_singular(nome))
-                    await canal_log.send(f'{ctx.author.name} adicinou 1 ponto ao {nome}, ele tem {finalponto} agora.')
-                    return
-                    
-                else:
-                    await ctx.channel.send(embed = add_plural(nome, ponto))
-                    await canal_log.send(f'{ctx.author.name} adicinou {ponto} pontos ao {nome}, ele tem {finalponto} agora.')
-                    return
+        if int(ponto) == 1:
+            await ctx.channel.send(embed = add_singular(nome))
+            await canal_log.send(f'{ctx.author.name} adicinou 1 ponto ao {nome}, ele tem {finalponto} agora.')
+            return
+            
+        else:
+            await ctx.channel.send(embed = add_plural(nome, ponto))
+            await canal_log.send(f'{ctx.author.name} adicinou {ponto} pontos ao {nome}, ele tem {finalponto} agora.')
+            return
             
         await canal_log.send(f'{ctx.author.name} passou parametros errados.')
         await ctx.channel.send(embed = add_erro(nome, ponto))

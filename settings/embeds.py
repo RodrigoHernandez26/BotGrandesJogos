@@ -297,7 +297,7 @@ def help_embed():
     embed.add_field(name = '?var', value = 'Inicia uma votação. (Necessário 5 votos para anular ou confirmar um var.)\nEx: ?var ponto nome "motivo"\nEx2: ?var 99 Megamente quebrou 99 vezes as regras', inline = False)
     embed.add_field(name = '?cancelarvar', value = 'Cancela o var que você criou. (Somente a pessoa que iniciou o var pode cancela-lo).\nEx: ?cancelarvar', inline = False)
     embed.add_field(name = '?ping', value = 'Visualiza a latência do Bot.\nEx: ?ping', inline= False)
-    embed.add_field(name = 'Rolar Dados: ', value = 'dX - Rola 1 dado de X lado(s)\nEx: d10\n\nYdX - Rola Y dados de X lado(s)\nEX: 3d10\n\nZ#YdX Rola Z vezes Y dados de X lado(s)\nEx: 5#3d10', inline= False)
+    embed.add_field(name = 'Rolar Dados: ', value = 'dX - Rola 1 dado de X lado(s)\nEx: d10\n\nYdX - Rola Y dados de X lado(s)\nEX: 3d10\n\nZ#YdX - Rola Z vezes Y dados de X lado(s)\nEx: 5#3d10', inline= False)
 
     return embed
 

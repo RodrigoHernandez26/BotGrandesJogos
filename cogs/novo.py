@@ -21,18 +21,13 @@ class Novo(commands.Cog):
 
         nome = msg.lower().capitalize()
 
-        data = mysql_command('select nome from pnts', True)
-
+        data = mysql_command(f'select nome from pnts where nome = "{nome}"', True)
         if len(data) == 0:
             mysql_command(f'insert into pnts (nome) value ("{nome}")')
 
         else:
-            for i in range(len(data)):
-                if data[i]['nome'] == nome:
-                    await ctx.channel.send(embed = novo_repetido(nome))
-                    return
-
-            mysql_command(f'insert into pnts (nome) value ("{nome}")')
+            await ctx.channel.send(embed = novo_repetido(nome))
+            return
 
         await ctx.channel.send(embed = novo_adicionado(nome))
         await canal_log.send(f'{ctx.author.name} adicionou o {nome} ao jogo.')
