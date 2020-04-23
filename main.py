@@ -18,7 +18,7 @@ try:
     with open('settings/settings.yaml', 'r') as f: data = yaml.load(f, Loader= yaml.FullLoader)
 
 except Exception:
-    print('Não foi encontrado o arquivo settings.yaml')
+    print('Não foi encontrado o arquivo settings.yaml\nCrie um igual ao ./settings/settings.yaml.example')
     sys.exit()
 
 try:

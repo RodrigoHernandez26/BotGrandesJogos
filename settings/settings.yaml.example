@@ -9,8 +9,6 @@ CHAT_RPG:  #ID do chat onde será lido e enviado as mensagens do RPG
 
 CHAT_PNTS:  #ID do chat onde será lido e enviado as mensagens dos pontos
 
-API_KEY:  #Request post do https://api.random.org
-
 LIM_ADD:  #Limite de pontos que podem ser adionados em 1 comando
 
 MSG_ADD:  #Mensagem que será enviada caso alguem tente adicionar mais que o limite
@@ -22,6 +20,10 @@ LIM_MULT:  #Limite do multiplicador de dados
 LIM_QNT:  #Limite da quantidade de dados
 
 LIM_DADO:  #Limite do número de lados do dado
+
+#Request post do https://api.random.org
+API_KEY: 
+API_ID: 
 
 #CONNECT DB (Em bot.sql tem o arquivo para criar o db)
 HOST: 

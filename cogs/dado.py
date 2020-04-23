@@ -51,6 +51,7 @@ def api_request(qnt, dado):
     with open('settings/settings.yaml', 'r') as f: reqKey = yaml.load(f, Loader= yaml.FullLoader)
 
     reqData['params']['apiKey'] = reqKey['API_KEY']
+    reqData['id'] = reqKey['API_ID']
     reqData['params']['n'] = str(qnt)
     reqData['params']['max'] = str(dado)
 
