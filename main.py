@@ -1,8 +1,47 @@
-import discord
+import sys
 import json
-from discord.ext import commands
 import os
-import yaml
+
+try:
+    import discord
+    import MySQLdb
+    import requests
+    import yaml
+    from discord.ext import commands
+    from discord.ext.commands import CommandNotFound
+
+except Exception:
+    print('Run requirements.txt in pip==20.0.2')
+    sys.exit()
+
+try:
+    with open('settings/settings.yaml', 'r') as f: data = yaml.load(f, Loader= yaml.FullLoader)
+
+except Exception:
+    print('Não foi encontrado o arquivo settings.yaml')
+    sys.exit()
+
+try:
+    assert data['TOKEN_BOT'] != None
+    assert data['CHAT_LOG'] != None
+    assert data['CHAT_RPG'] != None
+    assert data['CHAT_PNTS'] != None
+    assert data['API_KEY'] != None
+    assert data['LIM_ADD'] != None
+    assert data['MSG_ADD'] != None
+    assert data['ID_RESET'] != None
+    assert data['LIM_MULT'] != None
+    assert data['LIM_QNT'] != None
+    assert data['LIM_DADO'] != None
+    assert data['HOST'] != None
+    assert data['USER'] != None
+    assert data['PASSWORD'] != None
+    assert data['DB'] != None
+    assert data['PORT'] != None
+
+except Exception:
+    print('Complete todos os valores em ./settings/settings.yaml')
+    sys.exit()
 
 client = commands.Bot(command_prefix= '?', help_command= None)
 
@@ -19,11 +58,13 @@ async def reload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     client.load_extension(f'cogs.{extension}')
 
-with open('settings/settings.yaml', 'r') as f: data = yaml.load(f, Loader= yaml.FullLoader)
-token = data['TOKEN_BOT']
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, CommandNotFound):
+        return
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
 
-client.run(token)
+client.run(data['TOKEN_BOT'])
