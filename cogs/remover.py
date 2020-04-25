@@ -13,10 +13,10 @@ class Remover(commands.Cog):
 
         nome = msg.lower().capitalize()
 
-        data = mysql_command(f"select * from pnts where nome = '{nome}'", True)
+        data = mysql_command(f"select * from pnts where nome = '{nome}' and server = {ctx.guild.id}", True)
 
         if len(data) != 0:
-            mysql_command(f"delete from pnts where id_pontos = {data[0]['id_pontos']}")
+            mysql_command(f"delete from pnts where id_pontos = {data[0]['id_pontos']} and server = {ctx.guild.id}")
 
             await ctx.channel.send(embed = remover_nome(nome))
             return

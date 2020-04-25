@@ -13,15 +13,14 @@ class Novo(commands.Cog):
 
         nome = msg.lower().capitalize()
 
-        data = mysql_command(f'select nome from pnts where nome = "{nome}"', True)
-        if len(data) == 0:
-            mysql_command(f'insert into pnts (nome) value ("{nome}")')
-
-        else:
+        data = mysql_command(f'select nome from pnts where nome = "{nome}" and server = {ctx.guild.id}', True)
+        
+        if len(data) != 0:
             await ctx.channel.send(embed = novo_repetido(nome))
-            return
-
-        await ctx.channel.send(embed = novo_adicionado(nome))
+        
+        else:
+            mysql_command(f'insert into pnts (nome, server) value ("{nome}", {ctx.guild.id})')
+            await ctx.channel.send(embed = novo_adicionado(nome))
 
 def setup(client):
     client.add_cog(Novo(client))

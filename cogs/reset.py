@@ -21,7 +21,7 @@ class Reset(commands.Cog):
         if len(pnts) != 0:
             for role in ctx.author.roles:
                 if role_perm == role.id:
-                    #mysql_command("delete from pnts")
+                    mysql_command(f"delete from pnts where server = {ctx.guild.id}")
                     await ctx.channel.send(embed = reset_true())
                     return
 

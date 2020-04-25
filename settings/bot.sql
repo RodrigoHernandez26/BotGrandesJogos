@@ -4,6 +4,7 @@ create table pnts(
 	id_pontos int not null auto_increment,
     nome varchar(100) not null,
     pontos int not null default 0,
+    server bigint not null,
     primary key (id_pontos)
 );
 

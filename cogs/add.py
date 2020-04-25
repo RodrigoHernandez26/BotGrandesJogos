@@ -29,10 +29,10 @@ class Add(commands.Cog):
             await ctx.channel.send(embed = add_erro(nome, ponto))
             return
 
-        data = mysql_command(f"select * from pnts where nome = '{nome}'", True)
+        data = mysql_command(f"select * from pnts where nome = '{nome}' and server = {ctx.guild.id}", True)
         
         finalponto = int(data[0]['pontos']) + int(ponto)
-        mysql_command(f"update pnts set pontos = {finalponto} where id_pontos = {data[0]['id_pontos']}")
+        mysql_command(f"update pnts set pontos = {finalponto} where id_pontos = {data[0]['id_pontos']} and server = {ctx.guild.id}")
 
         if int(ponto) == 1:
             await ctx.channel.send(embed = add_singular(nome))

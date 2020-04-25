@@ -11,10 +11,12 @@ class Pontos(commands.Cog):
     @commands.command()
     async def pontos(self, ctx):
 
-        if len(mysql_command("select nome, pontos from pnts", True)) == 0:
+        data = mysql_command(f"select nome, pontos from pnts where server = {ctx.guild.id} order by pontos desc", True)
+
+        if len(data) == 0:
             await ctx.channel.send(embed = pontos_vazio())
         else:
-            await ctx.channel.send(embed = pontos_lista())
+            await ctx.channel.send(embed = pontos_lista(data))
    
 def setup(client):
     client.add_cog(Pontos(client))

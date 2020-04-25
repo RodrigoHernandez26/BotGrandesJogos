@@ -19,9 +19,7 @@ def pontos_vazio():
     return embed
     
 #*************************************************#
-def pontos_lista():
-    
-    data = mysql_command("select nome, pontos from pnts order by pontos desc", True)
+def pontos_lista(data):
 
     embed = discord.Embed(
         title = 'Os pontos são: ',
