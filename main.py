@@ -27,6 +27,7 @@ try:
     assert data['CHAT_RPG'] != None
     assert data['CHAT_PNTS'] != None
     assert data['API_KEY'] != None
+    assert data['API_ID'] != None
     assert data['LIM_ADD'] != None
     assert data['MSG_ADD'] != None
     assert data['ID_RESET'] != None
@@ -63,8 +64,29 @@ async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         return
 
-for filename in os.listdir('./cogs'):
-    if filename.endswith('.py'):
-        client.load_extension(f'cogs.{filename[:-3]}')
+try:
+    assert len(os.listdir('./cogs')) == 0
+    print('Nenhum comando criado em ./cogs')
+    sys.exit()
 
-client.run(data['TOKEN_BOT'])
+except Exception:
+    cont = 1
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+
+            try:
+                client.load_extension(f'cogs.{filename[:-3]}')
+
+            except Exception as erro:
+                print(f'Problema ao carregar {filename}\n{erro}')
+                sys.exit()
+            
+            print(f'{cont} - {filename[:-3]} loaded!')
+            cont += 1        
+
+try:
+    client.run(data['TOKEN_BOT'])
+
+except Exception as erro:
+    print(f'Impossível conectar ao bot - {erro}')
+    sys.exit()

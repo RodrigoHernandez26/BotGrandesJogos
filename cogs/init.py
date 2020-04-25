@@ -10,7 +10,7 @@ class Init(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print(datetime.now().strftime('%d/%m/%Y - %H:%M:%S\n'))
+        print(datetime.now().strftime('\n%d/%m/%Y - %H:%M:%S\n'))
 
         connect()
         
