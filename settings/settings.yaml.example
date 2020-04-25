@@ -3,17 +3,7 @@
 
 TOKEN_BOT:  #Token do seu bot https://discordapp.com/developers/applications
 
-CHAT_LOG:  #ID do chat onde será enviado as mensagens de log
-
-CHAT_RPG:  #ID do chat onde será lido e enviado as mensagens do RPG
-
-CHAT_PNTS:  #ID do chat onde será lido e enviado as mensagens dos pontos
-
 LIM_ADD:  #Limite de pontos que podem ser adionados em 1 comando
-
-MSG_ADD:  #Mensagem que será enviada caso alguem tente adicionar mais que o limite
-
-ID_RESET:  #ID do único usuário que pode resetar o jogo (user o comando ?reset)
 
 LIM_MULT:  #Limite do multiplicador de dados
 
@@ -25,7 +15,7 @@ LIM_DADO:  #Limite do número de lados do dado
 API_KEY: 
 API_ID: 
 
-#CONNECT DB (Em bot.sql tem o arquivo para criar o db)
+#CONNECT MySQL (Em bot.sql tem o arquivo para criar o db)
 HOST: 
 USER: 
 PASSWORD: 

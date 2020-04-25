@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
-import yaml
-from settings.embeds import reset_true, reset_false, reset_fail
+from settings.embeds import reset_true, reset_false, reset_fail, reset_none
 from settings.db_commands import mysql_command
 
 class Reset(commands.Cog):
@@ -11,34 +10,24 @@ class Reset(commands.Cog):
 
     @commands.command()
     async def reset(self, ctx):
+        pnts = mysql_command("select * from pnts", True)
+        try:
+            role_perm = mysql_command(f"select * from reset_roles where server = {ctx.guild.id}", True)[0]['id_role']
 
-        with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
-
-        if ctx.channel.id != settings['CHAT_PNTS']:
+        except Exception:
+            await ctx.channel.send(embed = reset_none())
             return
+        
+        if len(pnts) != 0:
+            for role in ctx.author.roles:
+                if role_perm == role.id:
+                    #mysql_command("delete from pnts")
+                    await ctx.channel.send(embed = reset_true())
+                    return
 
-        canal_log = self.client.get_channel(settings['CHAT_LOG'])
-
-        data = mysql_command("select * from pnts", True)
-
-        if len(data) != 0:
-            if ctx.author.id == settings['ID_RESET']:
-                
-                mysql_command("delete from pnts")
-
-                await ctx.channel.send(embed = reset_true())
-                await canal_log.send(f'{ctx.author.name} resetou o jogo.')
-
-            else:
-
-                await ctx.channel.send(embed = reset_false())
-                await canal_log.send(f'{ctx.author.name} tentou resetar o jogo.')
-            
+            await ctx.channel.send(embed = reset_false())
         else:
-
             await ctx.channel.send(embed = reset_fail())
-            await canal_log.send(f'{ctx.author.name} tentou resetar o jogo, mas não tinha ninguém participando.')
-
 
 def setup(client):
     client.add_cog(Reset(client))

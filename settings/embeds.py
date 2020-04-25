@@ -2,13 +2,17 @@ import discord
 import json
 from settings.db_commands import mysql_command
 
+#0x22a7f0 - Azul (Status)
+#0xff0000 - Vermelho (Erro)
+#0x00ff00 - Verde (Sucesso)
+
 #**************************************************************************************************************#
 #Embeds pontos.py
 
 def pontos_vazio():
     embed = discord.Embed(
         title = 'Não há ninguém no jogo!',
-        color = 0x22a7f0
+        color = 0xff0000
     )
     embed.set_footer(text = '?help para ajuda')
 
@@ -49,7 +53,7 @@ def pontos_lista():
 def novo_repetido(nome):
     embed = discord.Embed(
         title = f'O nome {nome} já foi adicionado ao jogo.',
-        color = 0x22a7f0
+        color = 0xff0000
     )
     embed.set_footer(text = '?help para ajuda')
 
@@ -60,7 +64,7 @@ def novo_repetido(nome):
 def novo_adicionado(nome):
     embed = discord.Embed(
         title = f'O nome {nome} foi adicionado ao jogo!',
-        color = 0x22a7f0
+        color = 0x00ff00
     )
     embed.set_footer(text = '?help para ajuda')
 
@@ -72,7 +76,7 @@ def novo_adicionado(nome):
 def remover_nome(nome):
     embed = discord.Embed(
         title = f'O nome {nome} foi retirado do jogo!',
-        color = 0x22a7f0
+        color = 0x00ff00
     )
     embed.set_footer(text = '?help para ajuda')
 
@@ -84,7 +88,7 @@ def remover_nome(nome):
 def add_erro(nome, ponto):
     embed = discord.Embed(
         title = 'Verifique se os parametros que foram passados estão corretos!',
-        color = 0x22a7f0
+        color = 0xff0000
     )
     embed.add_field(name = 'O nome passado foi:', value = nome, inline= False)
     embed.add_field(name = 'A quantidade de pontos a serem adicionado foi:', value = ponto, inline= False)
@@ -98,7 +102,7 @@ def add_erro(nome, ponto):
 def add_singular(nome):
     embed = discord.Embed(
         title = f'Foi adicionado 1 ponto ao {nome}!',
-        color = 0x22a7f0
+        color = 0x00ff00
     )
     embed.set_footer(text = '?help para ajuda')
 
@@ -109,9 +113,20 @@ def add_singular(nome):
 def add_plural(nome, ponto):
     embed = discord.Embed(
         title = f'Foi adicionado {ponto} pontos ao {nome}!',
-        color = 0x22a7f0
+        color = 0x00ff00
     )
 
+    embed.set_footer(text = '?help para ajuda')
+
+    return embed
+
+#*************************************************#
+
+def add_limite():
+    embed = discord.Embed(
+        title = 'Você não pode adicionar tantos pontos de uma vez',
+        color = 0xff0000
+    )
     embed.set_footer(text = '?help para ajuda')
 
     return embed
@@ -122,7 +137,7 @@ def add_plural(nome, ponto):
 def retirar_erro(nome, ponto):
     embed = discord.Embed(
         title = 'Verifique se os parametros que foram passados estão corretos!',
-        color = 0x22a7f0
+        color = 0xff0000
     )
     embed.add_field(name = 'O nome passado foi:', value = nome, inline= False)
     embed.add_field(name = 'A quantidade de pontos a serem retirados foi:', value = ponto, inline= False)
@@ -136,7 +151,7 @@ def retirar_erro(nome, ponto):
 def retirar_singular(nome):
     embed = discord.Embed(
         title = f'Foi retirado 1 ponto do {nome}!',
-        color = 0x22a7f0    
+        color = 0xff0000    
     )
     embed.set_footer(text = '?help para ajuda')
 
@@ -147,7 +162,7 @@ def retirar_singular(nome):
 def retirar_plural(nome, ponto):
     embed = discord.Embed(
         title = f'Foi retirado {ponto} pontos do {nome}!',
-        color = 0x22a7f0
+        color = 0xff0000
     )
     embed.set_footer(text = '?help para ajuda')
 
@@ -159,8 +174,9 @@ def retirar_plural(nome, ponto):
 def reset_true():
     embed = discord.Embed(
         title = 'Os nomes e pontos foram limpos!',
-        color = 0x22a7f0
+        color = 0x00ff00
     )
+    embed.set_footer(text = '?help para ajuda')
 
     return embed
 
@@ -169,8 +185,9 @@ def reset_true():
 def reset_false():
     embed = discord.Embed(
         title = 'Você não tem permissão de usar esse comando',
-        color = 0x22a7f0
+        color = 0xff0000
     )
+    embed.set_footer(text = '?help para ajuda')
 
     return embed
 
@@ -179,8 +196,20 @@ def reset_false():
 def reset_fail():
     embed = discord.Embed(
         title = 'Não há ninguém no jogo!',
+        color = 0xff0000
+    )
+    embed.set_footer(text = '?help para ajuda')
+
+    return embed
+
+#*************************************************#
+
+def reset_none():
+    embed = discord.Embed(
+        title = 'Defina um cargo para usar esse comando',
         color = 0x22a7f0
     )
+    embed.set_footer(text = '?help para ajuda')
 
     return embed
 
@@ -213,7 +242,7 @@ def criar_var(votacao):
 def var_fail():
     embed = discord.Embed(
         title = 'Verifique se já existe uma votação ou se todos os argumentos do comando estão corretos.',
-        color = 0x22a7f0
+        color = 0xff0000
     )
     embed.set_footer(text = '?help para ajuda')
 
@@ -248,7 +277,7 @@ def var_final(votacao, resultado):
 def var_autor():
     embed = discord.Embed(
         title = 'Não foi você que iniciou essa votação!',
-        color = 0x22a7f0
+        color = 0xff0000
     )
     embed.set_footer(text = '?help para ajuda')
 
@@ -260,7 +289,7 @@ def var_cancelado():
 
     embed = discord.Embed(
         title = 'O var foi cancelado!',
-        color = 0x22a7f0
+        color = 0x00ff00
     )
     embed.set_footer(text = '?help para ajuda')
 
@@ -272,7 +301,7 @@ def var_erro():
 
     embed = discord.Embed(
         title = 'Não existe uma votação em andamento!',
-        color = 0x22a7f0
+        color = 0xff0000
     )
     embed.set_footer(text = '?help para ajuda')
 
@@ -302,13 +331,47 @@ def help_embed():
     return embed
 
 #**************************************************************************************************************#
+#Embed setadm.py
+
+def setadm_erro():
+    embed = discord.Embed(
+        title = 'ID de cargo inválido',
+        color = 0xff0000
+    )
+    embed.set_footer(text = '?help para ajuda')
+
+    return embed
+
+#*************************************************#
+
+def setadm_alterado(role):
+    embed = discord.Embed(
+        title = f'ADM alterado para o {role}',
+        color = 0x00ff00
+    )
+    embed.set_footer(text = '?help para ajuda')
+
+    return embed
+
+#*************************************************#
+
+def setadm_neg(dono):
+    embed = discord.Embed(
+        title = f'Somente o dono do servidor ({dono}) pode usar esse comando!',
+        color = 0xff0000
+    )
+    embed.set_footer(text = '?help para ajuda')
+
+    return embed
+
+#**************************************************************************************************************#
 #Embed de erro
 
 def erro(nome):
 
     embed = discord.Embed(
         title = f'O {nome} não está no jogo!',
-        color = 0x22a7f0
+        color = 0xff0000
     )
     embed.set_footer(text = '?help para ajuda')
     embed.add_field(name = 'Dica:', value = 'Use o ?pontos pra verificar o nome dos participantes.', inline = False)

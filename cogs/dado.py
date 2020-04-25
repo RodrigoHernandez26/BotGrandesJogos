@@ -75,12 +75,7 @@ class Dado(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
-
-        with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
-
-        if ctx.channel.id != settings['CHAT_RPG']:
-            return
-
+        
         try:
             ctx.content[0]
         except Exception:

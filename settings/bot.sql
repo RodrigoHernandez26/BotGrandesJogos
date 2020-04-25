@@ -6,3 +6,9 @@ create table pnts(
     pontos int not null default 0,
     primary key (id_pontos)
 );
+
+create table reset_roles(
+	server bigint not null,
+    id_role bigint not null,
+    primary key (server)
+);

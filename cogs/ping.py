@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import yaml
 
 class Ping(commands.Cog):
 
@@ -9,11 +8,6 @@ class Ping(commands.Cog):
 
     @commands.command()
     async def ping(self, ctx):
-
-        with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
-
-        if ctx.channel.id != settings['CHAT_PNTS']:
-            return
 
         ping_embed = discord.Embed(
             title = f'⌛️ {round(self.client.latency * 1000)} ms',

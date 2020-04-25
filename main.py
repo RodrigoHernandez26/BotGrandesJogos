@@ -23,14 +23,9 @@ except Exception:
 
 try:
     assert data['TOKEN_BOT'] != None
-    assert data['CHAT_LOG'] != None
-    assert data['CHAT_RPG'] != None
-    assert data['CHAT_PNTS'] != None
     assert data['API_KEY'] != None
     assert data['API_ID'] != None
     assert data['LIM_ADD'] != None
-    assert data['MSG_ADD'] != None
-    assert data['ID_RESET'] != None
     assert data['LIM_MULT'] != None
     assert data['LIM_QNT'] != None
     assert data['LIM_DADO'] != None

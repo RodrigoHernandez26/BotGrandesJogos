@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import yaml
 from settings.embeds import novo_repetido, novo_adicionado
 from settings.db_commands import mysql_command
 
@@ -11,13 +10,6 @@ class Novo(commands.Cog):
 
     @commands.command()
     async def novo(self, ctx, msg):
-
-        with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
-
-        if ctx.channel.id != settings['CHAT_PNTS']:
-            return
-
-        canal_log = self.client.get_channel(settings['CHAT_LOG'])
 
         nome = msg.lower().capitalize()
 
@@ -30,7 +22,6 @@ class Novo(commands.Cog):
             return
 
         await ctx.channel.send(embed = novo_adicionado(nome))
-        await canal_log.send(f'{ctx.author.name} adicionou o {nome} ao jogo.')
 
 def setup(client):
     client.add_cog(Novo(client))

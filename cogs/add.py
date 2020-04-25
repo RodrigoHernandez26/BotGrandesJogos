@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import asyncio
 import yaml
-from settings.embeds import add_erro, add_singular, add_plural
+from settings.embeds import add_erro, add_singular, add_plural, add_limite
 from settings.db_commands import mysql_command
 
 class Add(commands.Cog):
@@ -15,11 +15,6 @@ class Add(commands.Cog):
 
         with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
 
-        if ctx.channel.id != settings['CHAT_PNTS']:
-            return
-
-        canal_log = self.client.get_channel(settings['CHAT_LOG'])
-
         nome = nome.lower().capitalize()
 
         try:
@@ -27,13 +22,10 @@ class Add(commands.Cog):
             assert int(ponto) > 0
 
             if int(ponto) > settings['LIM_ADD']: 
-                msg_troll = await ctx.channel.send(settings['MSG_ADD'])
-                await asyncio.sleep(2)
-                await msg_troll.delete()
+                await ctx.channel.send(embed = add_limite())
                 return
 
         except Exception:
-            await canal_log.send(f'{ctx.author.name} passou parametros errados.')
             await ctx.channel.send(embed = add_erro(nome, ponto))
             return
 
@@ -44,15 +36,12 @@ class Add(commands.Cog):
 
         if int(ponto) == 1:
             await ctx.channel.send(embed = add_singular(nome))
-            await canal_log.send(f'{ctx.author.name} adicinou 1 ponto ao {nome}, ele tem {finalponto} agora.')
             return
             
         else:
             await ctx.channel.send(embed = add_plural(nome, ponto))
-            await canal_log.send(f'{ctx.author.name} adicinou {ponto} pontos ao {nome}, ele tem {finalponto} agora.')
             return
             
-        await canal_log.send(f'{ctx.author.name} passou parametros errados.')
         await ctx.channel.send(embed = add_erro(nome, ponto))
 
 def setup(client):

@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import yaml
 from settings.embeds import json, criar_var, var_fail, var_final, var_autor, var_cancelado, var_erro
 from settings.db_commands import mysql_command
 
@@ -53,19 +52,10 @@ class Var(commands.Cog):
     @commands.command()
     async def var(self, ctx, ponto, nome, *, msg):
 
-        with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
-
-        if ctx.channel.id != settings['CHAT_PNTS']:
-            return
-
-        canal_log = self.client.get_channel(settings['CHAT_LOG'])
-        self.canal_log = canal_log
-
         try:
             nome = nome.lower().capitalize()
             assert self.msg_bot != None
             await ctx.channel.send(embed = var_fail())
-            await self.canal_log.send(f'{ctx.author.name} tentou criar um novo var, mas já existe uma votação em andamento.')
             return
 
         except Exception:
@@ -90,15 +80,9 @@ class Var(commands.Cog):
         Var.msg = self.msg_bot
         await self.msg_bot.add_reaction('✅')
         await self.msg_bot.add_reaction('❌')
-        await self.canal_log.send(f'{ctx.author.name} criou um var.')
 
     @commands.command()
     async def cancelarvar(self, ctx):
-
-        with open('settings/settings.yaml', 'r') as f: settings = yaml.load(f, Loader= yaml.FullLoader)
-
-        if ctx.channel.id != settings['CHAT_PNTS']:
-            return
 
         try:
             assert ctx.author.name == self.votacao.autor
