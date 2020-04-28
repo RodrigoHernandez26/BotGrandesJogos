@@ -17,15 +17,21 @@ class SetAdm(commands.Cog):
                 assert role_obj != None
 
             except Exception:
-                await ctx.channel.send(embed = setadm_erro())
-                return
+                try:
+                    role = role[3:-1]
+                    role = int(role)
+                    role_obj = ctx.guild.get_role(role)
+                    assert role_obj != None
+
+                except Exception:
+                    await ctx.channel.send(embed = setadm_erro())
+                    return
 
             try:
                 data = mysql_command(f'select * from reset_roles where server = {ctx.guild.id}', True)[0]
                 mysql_command(f'update reset_roles set id_role = {role} where server = {ctx.guild.id}')
 
             except Exception as e:
-                print(e)
                 mysql_command(f'insert into reset_roles (server, id_role) value ({ctx.guild.id}, {role})')
 
             await ctx.channel.send(embed = setadm_alterado(role_obj))
