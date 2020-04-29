@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from settings.embeds import pontos_vazio, pontos_lista
+from misc.embeds import pontos_vazio, pontos_lista
 from settings.db_commands import mysql_command
 
 class Pontos(commands.Cog):

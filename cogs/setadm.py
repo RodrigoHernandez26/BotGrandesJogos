@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from settings.db_commands import mysql_command
-from settings.embeds import setadm_erro, setadm_alterado, setadm_neg
+from misc.embeds import setadm_erro, setadm_alterado, setadm_neg
 
 class SetAdm(commands.Cog):
 
@@ -31,7 +31,7 @@ class SetAdm(commands.Cog):
                 data = mysql_command(f'select * from reset_roles where server = {ctx.guild.id}', True)[0]
                 mysql_command(f'update reset_roles set id_role = {role} where server = {ctx.guild.id}')
 
-            except Exception as e:
+            except Exception:
                 mysql_command(f'insert into reset_roles (server, id_role) value ({ctx.guild.id}, {role})')
 
             await ctx.channel.send(embed = setadm_alterado(role_obj))

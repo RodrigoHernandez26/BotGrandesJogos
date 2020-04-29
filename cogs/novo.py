@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from settings.embeds import novo_repetido, novo_adicionado
+from misc.embeds import novo_repetido, novo_adicionado
 from settings.db_commands import mysql_command
 
 class Novo(commands.Cog):

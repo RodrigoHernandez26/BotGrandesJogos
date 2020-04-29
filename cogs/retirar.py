@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
-from settings.embeds import retirar_erro, retirar_singular, retirar_plural, erro
+from misc.embeds import retirar_singular, retirar_plural
+from misc.embeds_user_error import retirar_erro, erro
 from settings.db_commands import mysql_command
 
 class Retirar(commands.Cog):

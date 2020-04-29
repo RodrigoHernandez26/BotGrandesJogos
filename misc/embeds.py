@@ -1,5 +1,4 @@
 import discord
-import json
 from settings.db_commands import mysql_command
 
 #0x22a7f0 - Azul (Status)
@@ -31,16 +30,16 @@ def pontos_lista(data):
     for i in range(len(data)):
 
         if cont == 0:
-            embed.add_field(name = data[i]['nome'] + '🥇', value = str(data[i]['pontos']), inline = True)
+            embed.add_field(name = f'**{data[i]["nome"]}** 🥇', value = str(data[i]['pontos']), inline = True)
         
         elif cont == 1:
-            embed.add_field(name = data[i]['nome'] + '🥈', value = str(data[i]['pontos']), inline = True)
+            embed.add_field(name = f'**{data[i]["nome"]}** 🥈', value = str(data[i]['pontos']), inline = True)
 
         elif cont == 2:
-            embed.add_field(name = data[i]['nome'] + '🥉', value = str(data[i]['pontos']), inline = True)
+            embed.add_field(name = f'**{data[i]["nome"]}** 🥉', value = str(data[i]['pontos']), inline = True)
 
         else:
-            embed.add_field(name = data[i]['nome'], value = str(data[i]['pontos']), inline = True)
+            embed.add_field(name = f'**{data[i]["nome"]}**', value = str(data[i]['pontos']), inline = True)
         cont += 1  
 
     return embed
@@ -50,7 +49,7 @@ def pontos_lista(data):
 
 def novo_repetido(nome):
     embed = discord.Embed(
-        title = f'O nome {nome} já foi adicionado ao jogo.',
+        title = f'O nome `{nome}` já foi adicionado ao jogo.',
         color = 0xff0000
     )
     embed.set_footer(text = '?help para ajuda')
@@ -61,7 +60,7 @@ def novo_repetido(nome):
 
 def novo_adicionado(nome):
     embed = discord.Embed(
-        title = f'O nome {nome} foi adicionado ao jogo!',
+        title = f'O nome `{nome}` foi adicionado ao jogo!',
         color = 0x00ff00
     )
     embed.set_footer(text = '?help para ajuda')
@@ -73,7 +72,7 @@ def novo_adicionado(nome):
 
 def remover_nome(nome):
     embed = discord.Embed(
-        title = f'O nome {nome} foi retirado do jogo!',
+        title = f'O nome `{nome}` foi retirado do jogo!',
         color = 0x00ff00
     )
     embed.set_footer(text = '?help para ajuda')
@@ -83,23 +82,9 @@ def remover_nome(nome):
 #**************************************************************************************************************#
 #Embeds add.py
 
-def add_erro(nome, ponto):
-    embed = discord.Embed(
-        title = 'Verifique se os parametros que foram passados estão corretos!',
-        color = 0xff0000
-    )
-    embed.add_field(name = 'O nome passado foi:', value = nome, inline= False)
-    embed.add_field(name = 'A quantidade de pontos a serem adicionado foi:', value = ponto, inline= False)
-    embed.set_footer(text = '?help para ajuda')
-
-
-    return embed
-
-#*************************************************#
-
 def add_singular(nome):
     embed = discord.Embed(
-        title = f'Foi adicionado 1 ponto ao {nome}!',
+        title = f'Foi adicionado `1` ponto ao `{nome}`!',
         color = 0x00ff00
     )
     embed.set_footer(text = '?help para ajuda')
@@ -110,7 +95,7 @@ def add_singular(nome):
 
 def add_plural(nome, ponto):
     embed = discord.Embed(
-        title = f'Foi adicionado {ponto} pontos ao {nome}!',
+        title = f'Foi adicionado `{ponto}` pontos ao `{nome}`!',
         color = 0x00ff00
     )
 
@@ -132,23 +117,9 @@ def add_limite():
 #**************************************************************************************************************#
 #Embeds retirar.py
 
-def retirar_erro(nome, ponto):
-    embed = discord.Embed(
-        title = 'Verifique se os parametros que foram passados estão corretos!',
-        color = 0xff0000
-    )
-    embed.add_field(name = 'O nome passado foi:', value = nome, inline= False)
-    embed.add_field(name = 'A quantidade de pontos a serem retirados foi:', value = ponto, inline= False)
-    embed.add_field(name = f'Verifique se {nome} já não tem 0 pontos', value = f'Ou se retirar {ponto} ponto(s) vai deixa-lo com pontos negativos.', inline= False)
-    embed.set_footer(text = '?help para ajuda')
-
-    return embed
-
-#*************************************************#
-
 def retirar_singular(nome):
     embed = discord.Embed(
-        title = f'Foi retirado 1 ponto do {nome}!',
+        title = f'Foi retirado `1` ponto do `{nome}`!',
         color = 0xff0000    
     )
     embed.set_footer(text = '?help para ajuda')
@@ -159,7 +130,7 @@ def retirar_singular(nome):
 
 def retirar_plural(nome, ponto):
     embed = discord.Embed(
-        title = f'Foi retirado {ponto} pontos do {nome}!',
+        title = f'Foi retirado `{ponto}` pontos do `{nome}`!',
         color = 0xff0000
     )
     embed.set_footer(text = '?help para ajuda')
@@ -221,12 +192,12 @@ def criar_var(votacao):
         color = 0x22a7f0
     )
     embed.set_footer(text = '?help para ajuda')
-    embed.add_field(name = votacao.autor + ' criou a votação', value = votacao.motivo, inline=False)
+    embed.add_field(name = f'`{votacao.autor}` criou a votação', value = votacao.motivo, inline=False)
 
     if votacao.ponto == 1:
-        embed.add_field(name = 'Esse var vale:', value = f'{votacao.ponto} ponto para o {votacao.alvo}', inline=False)
+        embed.add_field(name = 'Esse var vale:', value = f'{votacao.ponto} ponto para o `{votacao.alvo}`', inline=False)
     else:
-        embed.add_field(name = 'Esse var vale:', value = f'{votacao.ponto} pontos para o {votacao.alvo}', inline=False)
+        embed.add_field(name = 'Esse var vale:', value = f'{votacao.ponto} pontos para o `{votacao.alvo}`', inline=False)
 
     for name in votacao.voto['votos']:
         embed.add_field(name = name['user'], value = name['voto'], inline= False)
@@ -255,12 +226,12 @@ def var_final(votacao, resultado):
         color = 0x22a7f0                   
     )
     embed.set_footer(text = '?help para ajuda')
-    embed.add_field(name = votacao.autor + ' criou a votação', value = votacao.motivo, inline=False)
+    embed.add_field(name = f'`{votacao.autor}` criou a votação', value = f'**{votacao.motivo}**', inline=False)
 
     if votacao.ponto == 1:
-        embed.add_field(name = 'Esse var vale:', value = f'{votacao.ponto} ponto para o {votacao.alvo}', inline=False)
+        embed.add_field(name = '**Esse var vale:**', value = f'{votacao.ponto} ponto para o `{votacao.alvo}`', inline=False)
     else:
-        embed.add_field(name = 'Esse var vale:', value = f'{votacao.ponto} pontos para o {votacao.alvo}', inline=False)
+        embed.add_field(name = '**Esse var vale:**', value = f'{votacao.ponto} pontos para o `{votacao.alvo}`', inline=False)
 
     for name in votacao.voto['votos']:
         embed.add_field(name = name['user'], value = name['voto'], inline = False)
@@ -315,16 +286,16 @@ def help_embed():
         color = 0x22a7f0
     )
 
-    embed.set_footer(text = 'Verifique como está escrito o nome da pessoa pelo comando ?pontos. Os comandos e os nomes não tem sensibilidade a capitalização.')
-    embed.add_field(name = '?novo', value = 'Adiciona uma nova pessoa ao jogo.\nEx: ?novo NomeDaPessoa', inline = False)
-    embed.add_field(name = '?pontos', value = 'Lista os pontos por participante.\nEx: ?pontos', inline = False)
-    embed.add_field(name = '?remover', value = 'Remove uma pessoa do jogo e exclui sua pontuação.\nEx: ?remover NomeDaPessoa', inline = False)
-    embed.add_field(name = '?add', value = 'Adiciona pontos a uma pessoa.\nEx: ?add pontos NomeDaPessoa', inline = False)
-    embed.add_field(name = '?retirar', value = 'Retira pontos de uma pessoa.\nEx: ?retirar pontos NomeDaPessoa', inline = False)
-    embed.add_field(name = '?var', value = 'Inicia uma votação. (Necessário 5 votos para anular ou confirmar um var.)\nEx: ?var ponto nome "motivo"\nEx2: ?var 99 Megamente quebrou 99 vezes as regras', inline = False)
-    embed.add_field(name = '?cancelarvar', value = 'Cancela o var que você criou. (Somente a pessoa que iniciou o var pode cancela-lo).\nEx: ?cancelarvar', inline = False)
-    embed.add_field(name = '?ping', value = 'Visualiza a latência do Bot.\nEx: ?ping', inline= False)
-    embed.add_field(name = 'Rolar Dados: ', value = 'dX - Rola 1 dado de X lado(s)\nEx: d10\n\nYdX - Rola Y dados de X lado(s)\nEX: 3d10\n\nZ#YdX - Rola Z vezes Y dados de X lado(s)\nEx: 5#3d10', inline= False)
+    embed.set_footer(text = 'Verifique como está escrito o nome da pessoa pelo comando ?pontos. Os comandos e os nomes não tem sensibilidade a capitalização.**')
+    embed.add_field(name = '`?novo`', value = '**Adiciona uma nova pessoa ao jogo.\nEx: ?novo NomeDaPessoa**', inline = False)
+    embed.add_field(name = '`?pontos`', value = '**Lista os pontos por participante.\nEx: ?pontos**', inline = False)
+    embed.add_field(name = '`?remover`', value = '**Remove uma pessoa do jogo e exclui sua pontuação.\nEx: ?remover NomeDaPessoa**', inline = False)
+    embed.add_field(name = '`?add`', value = '**Adiciona pontos a uma pessoa.\nEx: ?add pontos NomeDaPessoa**', inline = False)
+    embed.add_field(name = '`?retirar`', value = '**Retira pontos de uma pessoa.\nEx: ?retirar pontos NomeDaPessoa**', inline = False)
+    embed.add_field(name = '`?var`', value = '**Inicia uma votação. (Necessário 5 votos para anular ou confirmar um var.)\nEx: ?var ponto nome "motivo"\nEx2: ?var 99 Megamente quebrou 99 vezes as regras**', inline = False)
+    embed.add_field(name = '`?cancelarvar`', value = '**Cancela o var que você criou. (Somente a pessoa que iniciou o var pode cancela-lo).\nEx: ?cancelarvar**', inline = False)
+    embed.add_field(name = '`?ping`', value = '**Visualiza a latência do Bot.\nEx: ?ping**', inline= False)
+    embed.add_field(name = '`Rolar Dados: `', value = '**dX - Rola 1 dado de X lado(s)\nEx: d10\n\nYdX - Rola Y dados de X lado(s)\nEX: 3d10\n\nZ#YdX - Rola Z vezes Y dados de X lado(s)\nEx: 5#3d10**', inline= False)
 
     return embed
 
@@ -344,7 +315,7 @@ def setadm_erro():
 
 def setadm_alterado(role):
     embed = discord.Embed(
-        title = f'ADM alterado para o {role}',
+        title = f'ADM alterado para o `{role}`',
         color = 0x00ff00
     )
     embed.set_footer(text = '?help para ajuda')
@@ -355,7 +326,7 @@ def setadm_alterado(role):
 
 def setadm_neg(dono):
     embed = discord.Embed(
-        title = f'Somente o dono do servidor ({dono}) pode usar esse comando!',
+        title = f'Somente o dono do servidor (`{dono}`) pode usar esse comando!',
         color = 0xff0000
     )
     embed.set_footer(text = '?help para ajuda')
@@ -363,16 +334,36 @@ def setadm_neg(dono):
     return embed
 
 #**************************************************************************************************************#
-#Embed de erro
+#Embed jokenpo.py
 
-def erro(nome):
+def jokenpo_bot(bot_choice, author):
 
     embed = discord.Embed(
-        title = f'O {nome} não está no jogo!',
-        color = 0xff0000
+        title = f'😢 | {author} você pedeu! O bot jogou {bot_choice}.',
+        color = 0x22a7f0
     )
-    embed.set_footer(text = '?help para ajuda')
-    embed.add_field(name = 'Dica:', value = 'Use o ?pontos pra verificar o nome dos participantes.', inline = False)
+
+    return embed
+
+#*************************************************#
+
+def jokenpo_user(bot_choice, author):
+    
+    embed = discord.Embed(
+        title = f'🎉 | {author} você ganhou! O bot jogou {bot_choice}.',
+        color = 0x22a7f0
+    )
+
+    return embed
+
+#*************************************************#
+
+def jokenpo_empate(bot_choice, author):
+
+    embed = discord.Embed(
+        title = f':flag_white: | {author} esse jogo foi empate! O bot jogou {bot_choice}.',
+        color = 0x22a7f0
+    )
 
     return embed
 

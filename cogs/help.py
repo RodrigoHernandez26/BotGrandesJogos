@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from settings.embeds import help_embed
+from misc.embeds import help_embed
 
 class Help(commands.Cog):
 

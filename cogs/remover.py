@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
-from settings.embeds import remover_nome, erro
+from misc.embeds import remover_nome
+from misc.embeds_user_error import erro
 from settings.db_commands import mysql_command
 
 class Remover(commands.Cog):

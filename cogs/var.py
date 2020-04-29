@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from settings.embeds import json, criar_var, var_fail, var_final, var_autor, var_cancelado, var_erro
+from misc.embeds import criar_var, var_fail, var_final, var_autor, var_cancelado, var_erro
 from settings.db_commands import mysql_command
 
 class NewVar():

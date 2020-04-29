@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from settings.embeds import reset_true, reset_false, reset_fail, reset_none
+from misc.embeds import reset_true, reset_false, reset_fail, reset_none
 from settings.db_commands import mysql_command
 
 class Reset(commands.Cog):
