@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.ext.commands import UserInputError
 from misc.embeds import retirar_singular, retirar_plural
 from misc.embeds_user_error import retirar_erro, erro
 from settings.db_commands import mysql_command
@@ -9,6 +10,10 @@ class Retirar(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, UserInputError):
+            await ctx.channel.send(embed = retirar_erro())
+
     @commands.command()
     async def retirar(self, ctx, ponto, nome):
 
@@ -17,7 +22,7 @@ class Retirar(commands.Cog):
             assert int(ponto) > 0
         
         except Exception:
-            await ctx.channel.send(embed = retirar_erro(nome, ponto))
+            await ctx.channel.send(embed = retirar_erro())
             return
 
         nome = nome.lower().capitalize()
@@ -35,11 +40,11 @@ class Retirar(commands.Cog):
                     return
                     
                 else:
-                    await ctx.channel.send(embed = retirar_plural(nome, ponto))
+                    await ctx.channel.send(embed = retirar_plural())
                     return
 
             else:
-                await ctx.channel.send(embed = retirar_erro(nome, ponto))
+                await ctx.channel.send(embed = retirar_erro())
                 return
         
         await ctx.channel.send(embed = erro(nome))
