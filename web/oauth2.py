@@ -8,7 +8,6 @@ class OAuth(object):
 
     CLIENT_ID = settings['CLIENT_ID']
     CLIENT_SECRET = settings['CLIENT_SECRET']
-    scope_login = "identify%20email%20guilds%20guilds.join"
     scope = settings['SCOPE']
     redirect_uri = settings['REDIRECT_URI']
     discord_login_url = f"https://discordapp.com/api/oauth2/authorize?client_id={CLIENT_ID}&redirect_uri={redirect_uri}&response_type=code&scope={scope}"
