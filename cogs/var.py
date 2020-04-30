@@ -13,6 +13,7 @@ class NewVar():
         self.voto = voto
         NewVar.voto = voto
 
+    @staticmethod
     async def add_voto(user, voto):
 
         if voto == '\u2705':
@@ -27,6 +28,7 @@ class NewVar():
 
             await Var.msg.edit(embed = criar_var(Var.votacao))
 
+    @staticmethod
     async def retira_voto(user, voto):
 
         cont = 0

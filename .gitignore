@@ -1,4 +1,6 @@
 __pycache__
 .vscode/
-settings.yaml
+env/
+*.yaml
 *.bat
+test/
